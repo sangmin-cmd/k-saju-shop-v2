@@ -1,0 +1,7 @@
+node_modules
+.next
+*.zip
+*.tar.gz
+.env.local
+.env.tmp.driveupload 
+.tmp.driveupload/ 
