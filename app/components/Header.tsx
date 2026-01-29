@@ -3,21 +3,10 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useCart } from './CartProvider';
-import { useAuth } from './AuthProvider';
-import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { totalItems } = useCart();
-  const { user, signOut } = useAuth();
-  const router = useRouter();
-
-  const handleSignOut = () => {
-    signOut();
-    router.push('/');
-    setIsUserMenuOpen(false);
-  };
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -59,41 +48,6 @@ export default function Header() {
               )}
             </Link>
 
-            {user ? (
-              <div className="hidden md:block relative">
-                <button
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors font-light"
-                >
-                  <span>{user.name}</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-
-                {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg py-2">
-                    <Link href="/mypage" className="block px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-black transition-colors font-light" onClick={() => setIsUserMenuOpen(false)}>
-                      마이페이지
-                    </Link>
-                    <Link href="/mypage/orders" className="block px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-black transition-colors font-light" onClick={() => setIsUserMenuOpen(false)}>
-                      주문 내역
-                    </Link>
-                    <hr className="my-2 border-gray-200" />
-                    <button onClick={handleSignOut} className="w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-black transition-colors font-light">
-                      로그아웃
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <>
-                <Link href="/login" className="hidden md:block text-gray-600 hover:text-black transition-colors font-light">
-                  로그인
-                </Link>
-              </>
-            )}
-
             {/* 모바일 메뉴 버튼 */}
             <button className="md:hidden text-gray-600" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,19 +69,6 @@ export default function Header() {
               <Link href="/about" className="text-gray-600 hover:text-black transition-colors font-light">소개</Link>
               <Link href="/reviews" className="text-gray-600 hover:text-black transition-colors font-light">후기</Link>
               <Link href="/faq" className="text-gray-600 hover:text-black transition-colors font-light">FAQ</Link>
-              {user ? (
-                <>
-                  <hr className="my-2 border-gray-200" />
-                  <div className="text-gray-600 font-light">{user.name}님</div>
-                  <Link href="/mypage" className="text-gray-600 hover:text-black transition-colors font-light">마이페이지</Link>
-                  <Link href="/mypage/orders" className="text-gray-600 hover:text-black transition-colors font-light">주문 내역</Link>
-                  <button onClick={handleSignOut} className="text-left text-gray-600 hover:text-black transition-colors font-light">로그아웃</button>
-                </>
-              ) : (
-                <>
-                  <Link href="/login" className="text-gray-600 hover:text-black transition-colors font-light">로그인</Link>
-                </>
-              )}
             </nav>
           </div>
         )}
