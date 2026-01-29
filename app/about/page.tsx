@@ -157,24 +157,24 @@ export default function AboutPage() {
                   <h3 className="font-bold text-lg" style={{ color: '#F5F5F0' }}>데이터 기반 분석</h3>
                 </div>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(245, 245, 240, 0.7)' }}>
-                  감이 아닌 숫자로 증명.<br />
-                  <strong className="text-purple-300">오행 분포, 십성 분석, 대운/세운 흐름을 시각화</strong>
+                  막연한 해석이 아닌 수치화된 결과.<br />
+                  <strong className="text-purple-300">오행 균형도, 십성 분포, 대운 흐름의 정량적 시각화</strong>
                 </p>
               </div>
               
-              {/* 실용적 조언 */}
+              {/* 실행 가능한 가이드 */}
               <div className="p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1"
                 style={{ background: 'rgba(255, 180, 100, 0.05)', border: '1px solid rgba(255, 180, 100, 0.15)' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center"
                     style={{ background: 'rgba(255, 180, 100, 0.15)', border: '1px solid rgba(255, 180, 100, 0.3)' }}>
-                    <span>💡</span>
+                    <span>🎯</span>
                   </div>
-                  <h3 className="font-bold text-lg" style={{ color: '#F5F5F0' }}>실용적 액션 플랜</h3>
+                  <h3 className="font-bold text-lg" style={{ color: '#F5F5F0' }}>실행 가능한 가이드</h3>
                 </div>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(245, 245, 240, 0.7)' }}>
-                  추상적인 미신을 배제.<br />
-                  <strong className="text-orange-300">현실 밀착형 액션 플랜과 타이밍 가이드 제시</strong>
+                  단순 운세가 아닌 액션 플랜.<br />
+                  <strong className="text-orange-300">시기별 전략, 관계 조언, 의사결정 프레임워크 제공</strong>
                 </p>
               </div>
             </div>
@@ -190,14 +190,14 @@ export default function AboutPage() {
             <h2 className="text-2xl font-bold mb-8 flex items-center gap-3" style={{ color: '#F5F5F0' }}>
               <span className="text-2xl">📦</span> 서비스 구성
             </h2>
-            <div className="space-y-6">
-              {/* 정통 사주 분석 */}
+            <div className="space-y-4">
+              {/* 정통 사주 */}
               <div className="p-6 rounded-2xl flex items-start gap-4"
                 style={{ background: 'rgba(100, 150, 255, 0.05)', borderLeft: '4px solid #6496ff' }}>
                 <div className="flex-1">
                   <h3 className="font-bold text-lg mb-2" style={{ color: '#F5F5F0' }}>정통 사주 분석</h3>
                   <p className="text-sm" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>
-                    나의 원형과 잠재력을 발견하는 <strong className="text-blue-300">15페이지의 내면 탐구</strong>
+                    나의 원형과 잠재력을 발견하는 <strong className="text-blue-300">깊이 있는 내면 탐구</strong>
                   </p>
                 </div>
                 <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ background: 'rgba(100, 150, 255, 0.2)', color: '#6496ff' }}>
@@ -211,7 +211,7 @@ export default function AboutPage() {
                 <div className="flex-1">
                   <h3 className="font-bold text-lg mb-2" style={{ color: '#F5F5F0' }}>정통사주 × MBTI 분석</h3>
                   <p className="text-sm" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>
-                    동서양 분석의 결합, <strong className="text-amber-300">타인과 나를 이해하는 30페이지 입체적 가이드</strong>
+                    동서양 분석의 결합, <strong className="text-amber-300">타인과 나를 이해하는 입체적 가이드</strong>
                   </p>
                 </div>
                 <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ background: 'rgba(212, 175, 55, 0.2)', color: '#d4af37' }}>
@@ -225,7 +225,7 @@ export default function AboutPage() {
                 <div className="flex-1">
                   <h3 className="font-bold text-lg mb-2" style={{ color: '#F5F5F0' }}>연인 궁합 스페셜 분석</h3>
                   <p className="text-sm" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>
-                    단순 성격 차이를 넘어선 <strong className="text-rose-300">'관계의 역학'과 장기적 합(合) 25페이지 분석</strong>
+                    단순 성격 차이를 넘어선 <strong className="text-rose-300">'관계의 역학'과 장기적 합(合) 분석</strong>
                   </p>
                 </div>
                 <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ background: 'rgba(224, 176, 176, 0.2)', color: '#E0B0B0' }}>
@@ -273,7 +273,7 @@ export default function AboutPage() {
               </div>
               
               <p className="text-sm" style={{ color: 'rgba(245, 245, 240, 0.5)' }}>
-                현재 기술 특허 출원 중 · 2025년 하반기 공개 예정
+                현재 기술 특허 출원 중 · 2026년 하반기 공개 예정
               </p>
             </div>
           </section>
@@ -322,10 +322,10 @@ export default function AboutPage() {
               <span className="text-2xl">🏢</span> 운영사 정보
             </h2>
             <div className="grid md:grid-cols-2 gap-4" style={{ color: 'rgba(245, 245, 240, 0.8)' }}>
-              <p><strong className="text-amber-300">상호명:</strong> 인사이트 금융경영 연구소</p>
+              <p><strong className="text-amber-300">상호명:</strong> 브릿지에이치 연구소</p>
               <p><strong className="text-amber-300">대표자:</strong> 이상민</p>
               <p><strong className="text-amber-300">사업자등록번호:</strong> 110-37-62594</p>
-              <p><strong className="text-amber-300">이메일:</strong> amoretto75@naver.com</p>
+              <p><strong className="text-amber-300">이메일:</strong> fatemate2026@gmail.com</p>
               <p className="md:col-span-2"><strong className="text-amber-300">주소:</strong> 경기도 용인시 기흥구 동백죽전대로 444, C602-B23호</p>
               <p><strong className="text-amber-300">전화:</strong> 010-2806-2497</p>
             </div>
