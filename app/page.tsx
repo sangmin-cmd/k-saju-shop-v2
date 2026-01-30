@@ -18,8 +18,8 @@ export default function Home() {
       content: {
         type: 'ENFP × 甲木',
         label: '성장하는 아이디어',
-        keywords: ['#도전', '#성장', '#에너자이저'],
-        insight: '끊임없이 새로운 도전을 멈추지 않는 에너자이저. 아이디어가 샘솟지만 마무리에 집중이 필요한 시기'
+        keywords: ['#직진형연애러', '#감성폭발타입', '#사랑에올인형'],
+        insight: '끊임없이 새로운 도전을 멈추지 않는 에너자이저. 연애에선 직진 본능이 강하지만, 감정 조절이 필요한 시기'
       }
     },
     {
@@ -67,7 +67,7 @@ export default function Home() {
     },
     {
       q: '리포트는 어떻게 받나요?',
-      a: '결제 완료 후 즉시 PDF가 생성되며, 마이페이지에서 언제든 다운로드할 수 있습니다. 이메일로도 발송해 드립니다.'
+      a: '결제 완료 후 입력하신 이메일로 PDF가 발송됩니다. 24시간 이내 받아보실 수 있습니다.'
     },
     {
       q: '환불은 어떻게 되나요?',
@@ -76,12 +76,12 @@ export default function Home() {
   ];
 
   const reviews = [
-    { text: '"설명이 뻔하지 않고 행동 가이드가 있어서 좋았어요."', author: '30대, 직장인', rating: 5 },
-    { text: '"결과가 재현돼서 신뢰가 생겼습니다."', author: '40대, 자영업', rating: 5 },
-    { text: '"오행 밸런스 보고 생활 루틴을 바꿨더니 컨디션이 달라졌어요."', author: '20대, 대학원생', rating: 4 },
-    { text: '"연애 패턴이 정확히 맞아서 소름…"', author: '30대, 프리랜서', rating: 5 },
-    { text: '"PDF로 정리돼서 상담 자료처럼 쓰기 좋아요."', author: '40대, 컨설턴트', rating: 4 },
-    { text: '"MBTI랑 같이 보니까 납득이 됩니다."', author: '20대, 직장인', rating: 5 }
+    { text: '"썸 타는 사람과 궁합 봤는데 \'밀당보다 직진이 맞는 조합\'이라고 나와서 고백했어요! 지금 사귀는 중 💕"', author: '28세, 직장인', rating: 5 },
+    { text: '"연애 패턴이 정확히 맞아서 소름… 왜 맨날 같은 유형한테 끌리는지 이해됐어요"', author: '31세, 프리랜서', rating: 5 },
+    { text: '"남친이랑 자꾸 싸우는 이유가 사주로 딱 설명되더라고요. 화해 전략까지 알려줘서 진짜 도움됐어요"', author: '29세, 대학원생', rating: 5 },
+    { text: '"결과가 재현돼서 신뢰가 생겼습니다. AI 운세랑은 확실히 다르네요"', author: '34세, 자영업', rating: 5 },
+    { text: '"오행 밸런스 보고 생활 루틴을 바꿨더니 컨디션이 달라졌어요"', author: '27세, 직장인', rating: 4 },
+    { text: '"MBTI랑 같이 보니까 납득이 됩니다. PDF로 정리돼서 두고두고 봐요"', author: '32세, 컨설턴트', rating: 5 }
   ];
 
   return (
@@ -112,29 +112,29 @@ export default function Home() {
             <span className="text-amber-200/90 text-sm font-medium tracking-wide">전통 사주 × 현대 심리학</span>
           </div>
           
-          {/* H1 - 메인 카피 */}
+          {/* H1 - 메인 카피 (연애 중심) */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight tracking-tight"
             style={{ color: '#F5F5F0' }}>
-            나를 깊이 이해하면,<br />상대가 보이기 시작합니다.
+            그 사람, 진심일까?<br />우리, 끝까지 갈 수 있을까?
           </h1>
           
           {/* Sub - 부드러운 크림톤 */}
           <p className="text-lg md:text-xl mb-10 max-w-3xl mx-auto leading-relaxed"
             style={{ color: 'rgba(245, 245, 240, 0.75)' }}>
-            2026년 나의 흐름, 그리고 관계의 패턴까지<br className="hidden md:block" />
-            <span className="text-amber-300 font-semibold">MBTI × 사주</span>로 읽어드립니다.
+            막연한 감만으로는 알 수 없는 것들.<br className="hidden md:block" />
+            <span className="text-amber-300 font-semibold">사주 × MBTI</span> 구조 분석으로 연애의 본질을 읽어드립니다.
           </p>
 
-          {/* 후킹 질문 3개 */}
+          {/* 후킹 질문 3개 - 연애 중심 */}
           <div className="flex flex-wrap justify-center gap-5 mb-14">
             <div className="px-5 py-3 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-              <span style={{ color: 'rgba(245, 245, 240, 0.85)' }} className="text-sm">💭 "그 사람, 나한테 진심일까?"</span>
+              <span style={{ color: 'rgba(245, 245, 240, 0.85)' }} className="text-sm">💭 "왜 나는 맨날 이런 사람한테 끌릴까?"</span>
             </div>
             <div className="px-5 py-3 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-              <span style={{ color: 'rgba(245, 245, 240, 0.85)' }} className="text-sm">💕 "우리 궁합 괜찮은 걸까?"</span>
+              <span style={{ color: 'rgba(245, 245, 240, 0.85)' }} className="text-sm">💕 "썸일까 쌈일까? 고백해도 될까?"</span>
             </div>
             <div className="px-5 py-3 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-              <span style={{ color: 'rgba(245, 245, 240, 0.85)' }} className="text-sm">✨ "올해 언제가 내 타이밍일까?"</span>
+              <span style={{ color: 'rgba(245, 245, 240, 0.85)' }} className="text-sm">✨ "올해 언제가 연애 타이밍일까?"</span>
             </div>
           </div>
 
@@ -249,7 +249,7 @@ export default function Home() {
                       <p className="mt-3 text-lg" style={{ color: 'rgba(245, 245, 240, 0.8)' }}>성장하는 아이디어</p>
                     </div>
                     
-                    {/* 키워드 뱃지 - 강화된 스타일 */}
+                    {/* 키워드 뱃지 - 연애 유형 배지 */}
                     <div className="flex justify-center gap-3 mb-8">
                       {reportPreviews[0].content.keywords.map((kw, i) => (
                         <span key={i} className="px-4 py-2 rounded-full text-sm font-medium border border-amber-500/30 shadow-lg"
@@ -265,7 +265,7 @@ export default function Home() {
                     {/* 설명 - 강조 처리 */}
                     <p className="text-center leading-relaxed text-lg" style={{ color: 'rgba(245, 245, 240, 0.9)' }}>
                       끊임없이 새로운 도전을 멈추지 않는 에너자이저.<br />
-                      아이디어가 샘솟지만 <span className="text-amber-400 font-semibold">마무리에 집중</span>이 필요한 시기
+                      연애에선 <span className="text-amber-400 font-semibold">직진 본능</span>이 강하지만, 감정 조절이 필요한 시기
                     </p>
                   </div>
                 )}
@@ -399,61 +399,34 @@ export default function Home() {
                     </span>
                     <span>만세력 계산 오류 가능성</span>
                   </li>
-                  <li className="flex items-start gap-3" style={{ color: 'rgba(245, 245, 240, 0.5)' }}>
-                    <span className="w-5 h-5 rounded-full border border-dashed border-gray-600 flex items-center justify-center mt-0.5">
-                      <span className="w-1.5 h-1.5 bg-gray-600 rounded-full"></span>
-                    </span>
-                    <span>추상적인 운세 문구</span>
-                  </li>
                 </ul>
               </div>
             </div>
 
-            {/* K-Saju Engine - 황금나침반 배경 + 프리미엄 */}
-            <div className="rounded-2xl p-8 relative overflow-hidden group transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl"
+            {/* K-Saju - 골드 강조 */}
+            <div className="rounded-2xl p-8 relative overflow-hidden"
               style={{ 
-                background: 'linear-gradient(135deg, rgba(26, 39, 68, 0.95) 0%, rgba(36, 59, 97, 0.9) 100%)',
-                border: '2px solid rgba(212, 175, 55, 0.5)',
-                boxShadow: '0 0 40px rgba(212, 175, 55, 0.15)'
+                background: 'linear-gradient(135deg, rgba(26, 39, 68, 0.9) 0%, rgba(36, 59, 97, 0.9) 100%)',
+                border: '2px solid rgba(212, 175, 55, 0.4)',
+                boxShadow: '0 0 60px rgba(212, 175, 55, 0.15)'
               }}>
-              
-              {/* 황금나침반 배경 이미지 */}
-              <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-500">
-                <img 
-                  src="/images/compass.png" 
-                  alt="" 
-                  className="absolute right-0 top-1/2 -translate-y-1/2 w-72 h-72 object-contain opacity-60"
-                  style={{ filter: 'saturate(1.2)' }}
-                />
-              </div>
-              
-              {/* 골드 글로우 효과 */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{ boxShadow: 'inset 0 0 60px rgba(212, 175, 55, 0.1)' }}></div>
-              
-              {/* 추천 배지 */}
-              <div className="absolute top-4 right-4 z-20">
-                <span className="px-4 py-1.5 text-xs font-bold rounded-full shadow-lg"
-                  style={{ 
-                    background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)',
-                    color: '#0a0f1a'
-                  }}>
-                  추천
-                </span>
+              {/* 골드 글로우 배경 */}
+              <div className="absolute inset-0">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl"></div>
               </div>
               
               <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg"
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center"
                     style={{ 
                       background: 'linear-gradient(135deg, #d4af37 0%, #b8960c 100%)',
                       boxShadow: '0 0 20px rgba(212, 175, 55, 0.4)'
                     }}>
-                    <span className="text-2xl">🧭</span>
+                    <span className="text-2xl">⚡</span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold" style={{ color: '#F5F5F0' }}>K-Saju Engine</h3>
-                    <p className="text-sm font-medium" style={{ color: '#d4af37' }}>정밀 계산 시스템</p>
+                    <h3 className="text-lg font-bold" style={{ color: '#d4af37' }}>K-Saju 엔진</h3>
+                    <p className="text-sm" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>정밀 계산 기반</p>
                   </div>
                 </div>
                 <ul className="space-y-5">
@@ -461,7 +434,7 @@ export default function Home() {
                     <span className="w-5 h-5 flex items-center justify-center mt-0.5">
                       <span className="text-amber-400">◆</span>
                     </span>
-                    <span><strong className="text-amber-300">100% 재현 가능</strong>한 일관성</span>
+                    <span>동일 입력 시 <strong className="text-amber-300">동일 결과</strong> 보장</span>
                   </li>
                   <li className="flex items-start gap-3" style={{ color: '#F5F5F0' }}>
                     <span className="w-5 h-5 flex items-center justify-center mt-0.5">
@@ -722,7 +695,7 @@ export default function Home() {
             지금 시작하세요
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: '#F5F5F0' }}>
-            감이 아닌 구조로 읽어내는<br />진정한 나를 만나보세요.
+            당신의 연애, 감에만 맡기지 마세요.<br />데이터로 읽으면, 방향이 보입니다.
           </h2>
           <p className="text-xl mb-10" style={{ color: 'rgba(245, 245, 240, 0.7)' }}>
             무료 1페이지로 먼저 확인하고, 필요하면 전체 리포트로 확장하세요.
