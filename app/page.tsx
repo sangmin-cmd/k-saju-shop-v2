@@ -902,7 +902,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ========== 8. FAQ - 프리미엄 다크 ========== */}
+      {/* ========== 8. FAQ - 전체 상품 보기 다크 ========== */}
       <section className="py-28 px-4"
         style={{ background: 'linear-gradient(180deg, #050810 0%, #0a1628 50%, #050810 100%)' }}>
         <div className="max-w-3xl mx-auto">
@@ -943,7 +943,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ========== 9. FINAL CTA - 프리미엄 네이비+골드 ========== */}
+      {/* ========== 9. FINAL CTA - 전체 상품 보기 네이비+골드 ========== */}
       <section className="py-24 px-4"
         style={{ background: 'linear-gradient(135deg, #0a0f1a 0%, #1a2744 50%, #243b61 100%)' }}>
         <div className="max-w-4xl mx-auto text-center">
