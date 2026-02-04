@@ -191,16 +191,16 @@ export default function AboutPage() {
               <span className="text-2xl">📦</span> 서비스 구성
             </h2>
             <div className="space-y-4">
-              {/* 정통 사주 */}
+              {/* 재물운 × 사업 타이밍 */}
               <div className="p-6 rounded-2xl flex items-start gap-4"
-                style={{ background: 'rgba(100, 150, 255, 0.05)', borderLeft: '4px solid #6496ff' }}>
+                style={{ background: 'rgba(212, 175, 55, 0.05)', borderLeft: '4px solid #d4af37' }}>
                 <div className="flex-1">
-                  <h3 className="font-bold text-lg mb-2" style={{ color: '#F5F5F0' }}>정통 사주 분석</h3>
+                  <h3 className="font-bold text-lg mb-2" style={{ color: '#F5F5F0' }}>재물운 × 사업 타이밍</h3>
                   <p className="text-sm" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>
-                    나의 원형과 잠재력을 발견하는 <strong className="text-blue-300">깊이 있는 내면 탐구</strong>
+                    재운 흐름과 투자 시기를 분석하는 <strong className="text-amber-300">최적의 타이밍 가이드</strong>
                   </p>
                 </div>
-                <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ background: 'rgba(100, 150, 255, 0.2)', color: '#6496ff' }}>
+                <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ background: 'rgba(212, 175, 55, 0.2)', color: '#d4af37' }}>
                   입문
                 </span>
               </div>
@@ -275,40 +275,6 @@ export default function AboutPage() {
               <p className="text-sm" style={{ color: 'rgba(245, 245, 240, 0.5)' }}>
                 현재 기술 특허 출원 중 · 2026년 하반기 공개 예정
               </p>
-            </div>
-          </section>
-
-          {/* 전문가 & 신뢰 */}
-          <section className="relative rounded-3xl p-8 md:p-10"
-            style={{
-              background: 'rgba(255, 255, 255, 0.03)',
-              backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.08)'
-            }}>
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{ color: '#F5F5F0' }}>
-                전문가의 협업으로 탄생
-              </h2>
-              <p style={{ color: 'rgba(245, 245, 240, 0.6)' }}>
-                20년 경력의 명리학 전문가와 데이터 사이언티스트의 협업
-              </p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6 text-center">
-              <div className="p-6">
-                <div className="text-4xl mb-4">📜</div>
-                <h4 className="font-bold mb-2" style={{ color: '#F5F5F0' }}>전통 명리학</h4>
-                <p className="text-sm" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>20년+ 경력 전문가 감수</p>
-              </div>
-              <div className="p-6">
-                <div className="text-4xl mb-4">💻</div>
-                <h4 className="font-bold mb-2" style={{ color: '#F5F5F0' }}>정밀 알고리즘</h4>
-                <p className="text-sm" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>자체 개발 계산 엔진</p>
-              </div>
-              <div className="p-6">
-                <div className="text-4xl mb-4">🧠</div>
-                <h4 className="font-bold mb-2" style={{ color: '#F5F5F0' }}>현대 심리학</h4>
-                <p className="text-sm" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>MBTI 교차 검증</p>
-              </div>
             </div>
           </section>
 

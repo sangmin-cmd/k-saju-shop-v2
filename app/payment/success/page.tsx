@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useCart } from '../../components/CartProvider';
 
 export default function PaymentSuccessPage() {
   const searchParams = useSearchParams();
+  const { clearCart } = useCart(); // 장바구니 초기화 훅 추가
   const [orderInfo, setOrderInfo] = useState<any>(null);
   const [notificationSent, setNotificationSent] = useState(false);
 
@@ -27,8 +29,11 @@ export default function PaymentSuccessPage() {
       
       // 주문 완료 후 로컬스토리지 클리어
       localStorage.removeItem('pendingOrder');
+      
+      // 🎯 장바구니 비우기 추가!
+      clearCart();
     }
-  }, [orderId, amount, notificationSent]);
+  }, [orderId, amount, notificationSent, clearCart]);
 
   // 관리자 알림 발송 함수
   const sendAdminNotification = async (order: any) => {

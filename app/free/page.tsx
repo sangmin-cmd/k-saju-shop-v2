@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 // DB import
@@ -202,13 +203,51 @@ const BlurredSection = ({ title, icon, height = 'h-24' }: { title: string, icon?
 );
 
 export default function FreePage() {
+  const searchParams = useSearchParams();
+  const type = searchParams.get('type') || 'default';
+  
+  // 분석 모드: self면 개인 분석, 나머지는 궁합 분석
+  const [analysisMode, setAnalysisMode] = useState<'individual' | 'couple'>(
+    type === 'self' ? 'individual' : 'couple'
+  );
+  
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '', birthYear: '', birthMonth: '', birthDay: '', birthHour: '',
     gender: '', mbti: '', calendarType: 'solar', isLeapMonth: false
   });
+  const [partnerData, setPartnerData] = useState({
+    name: '', birthYear: '', birthMonth: '', birthDay: '', birthHour: '',
+    gender: '', mbti: '', calendarType: 'solar', isLeapMonth: false
+  });
   const [result, setResult] = useState<any>(null);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+
+  // 상황별 헤드라인 정의
+  const headlineContent = {
+    new: {
+      title: "그 사람, 나와 잘 맞을까요?",
+      subtitle: "상대방의 연애 DNA부터 공략법, 연락 타이밍까지\n고백 성공률을 높이는 전략을 알려드려요"
+    },
+    dating: {
+      title: "우리, 어떻게 더 깊어질 수 있을까요?",
+      subtitle: "관계의 강점과 주의점, 권태기 극복 방법까지\n더 단단한 연애를 위한 맞춤 가이드"
+    },
+    problem: {
+      title: "왜 맨날 여기서 막힐까요?",
+      subtitle: "갈등 패턴부터 화해 방법, 재회 가능성까지\n관계를 풀어줄 구체적인 해답을 드려요"
+    },
+    self: {
+      title: "나는 어떤 사람일까요?",
+      subtitle: "MBTI × 사주로 보는 나의 핵심 성향\n숨겨진 강점과 연애 스타일을 발견하세요"
+    },
+    default: {
+      title: "우리, 얼마나 잘 맞을까?",
+      subtitle: "사주 × MBTI 160가지 유형으로\n지금 우리 관계를 정확히 알려드려요"
+    }
+  };
+
+  const currentHeadline = headlineContent[type as keyof typeof headlineContent] || headlineContent.default;
 
   const years = Array.from({ length: 80 }, (_, i) => 2010 - i);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -216,48 +255,91 @@ export default function FreePage() {
 
   const handleAnalyze = () => {
     const newErrors: {[key: string]: string} = {};
+    
+    // 내 정보 검증
     if (!formData.name.trim()) newErrors.name = '이름을 입력해주세요';
     if (!formData.birthYear) newErrors.birthYear = '출생년도를 선택해주세요';
     if (!formData.birthMonth) newErrors.birthMonth = '출생월을 선택해주세요';
     if (!formData.birthDay) newErrors.birthDay = '출생일을 선택해주세요';
     if (!formData.gender) newErrors.gender = '성별을 선택해주세요';
     if (!formData.mbti) newErrors.mbti = 'MBTI를 선택해주세요';
+    
+    // 궁합 분석일 때 상대방 정보 검증
+    if (analysisMode === 'couple') {
+      if (!partnerData.name.trim()) newErrors.partnerName = '상대방 이름을 입력해주세요';
+      if (!partnerData.birthYear) newErrors.partnerBirthYear = '상대방 출생년도를 선택해주세요';
+      if (!partnerData.birthMonth) newErrors.partnerBirthMonth = '상대방 출생월을 선택해주세요';
+      if (!partnerData.birthDay) newErrors.partnerBirthDay = '상대방 출생일을 선택해주세요';
+      if (!partnerData.gender) newErrors.partnerGender = '상대방 성별을 선택해주세요';
+      if (!partnerData.mbti) newErrors.partnerMbti = '상대방 MBTI를 선택해주세요';
+    }
+    
     if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
 
+    // 내 정보 사주 계산
     const year = parseInt(formData.birthYear);
     const month = parseInt(formData.birthMonth);
     const day = parseInt(formData.birthDay);
     const hour = formData.birthHour ? parseInt(formData.birthHour) * 2 + 1 : 12;
     
-    // 디버그
-    console.log('=== 입력값 확인 ===');
-    console.log('formData.birthDay:', formData.birthDay);
-    console.log('parsed day:', day);
-    console.log('year/month/day:', year, month, day);
-    
-    const saju = calculateSaju(year, month, day, hour);
-    console.log('계산된 일간 index:', saju.day.stem);
-    console.log('일간:', STEMS[saju.day.stem].hanja);
-    const dayMasterHanja = STEMS[saju.day.stem].hanja;
-    const combination = getCombination(dayMasterHanja, formData.mbti);
+    const mySaju = calculateSaju(year, month, day, hour);
+    const myDayMasterHanja = STEMS[mySaju.day.stem].hanja;
+    const myCombination = getCombination(myDayMasterHanja, formData.mbti);
 
-    setResult({
-      name: formData.name, saju, mbti: formData.mbti,
-      mbtiInfo: MBTI_TYPES[formData.mbti],
-      combination
-    });
+    if (analysisMode === 'individual') {
+      // 개인 분석
+      setResult({
+        mode: 'individual',
+        name: formData.name,
+        saju: mySaju,
+        mbti: formData.mbti,
+        mbtiInfo: MBTI_TYPES[formData.mbti],
+        combination: myCombination
+      });
+    } else {
+      // 궁합 분석
+      const partnerYear = parseInt(partnerData.birthYear);
+      const partnerMonth = parseInt(partnerData.birthMonth);
+      const partnerDay = parseInt(partnerData.birthDay);
+      const partnerHour = partnerData.birthHour ? parseInt(partnerData.birthHour) * 2 + 1 : 12;
+      
+      const partnerSaju = calculateSaju(partnerYear, partnerMonth, partnerDay, partnerHour);
+      const partnerDayMasterHanja = STEMS[partnerSaju.day.stem].hanja;
+      const partnerCombination = getCombination(partnerDayMasterHanja, partnerData.mbti);
+      
+      setResult({
+        mode: 'couple',
+        my: {
+          name: formData.name,
+          saju: mySaju,
+          mbti: formData.mbti,
+          mbtiInfo: MBTI_TYPES[formData.mbti],
+          combination: myCombination
+        },
+        partner: {
+          name: partnerData.name,
+          saju: partnerSaju,
+          mbti: partnerData.mbti,
+          mbtiInfo: MBTI_TYPES[partnerData.mbti],
+          combination: partnerCombination
+        }
+      });
+    }
+    
     setStep(2);
   };
 
   // ==================== 결과 화면 ====================
   if (step === 2 && result) {
-    const dayStem = STEMS[result.saju.day.stem];
-    const elementInfo = ELEMENTS[dayStem.element];
-    const combination = result.combination;
-    const scoreGrade = combination ? getScoreGrade(combination.harmony.score) : null;
-    const cognitive = MBTI_COGNITIVE[result.mbti];
-    
-    // MBTI 4축 분석
+    // 개인 분석 결과
+    if (result.mode === 'individual') {
+      const dayStem = STEMS[result.saju.day.stem];
+      const elementInfo = ELEMENTS[dayStem.element];
+      const combination = result.combination;
+      const scoreGrade = combination ? getScoreGrade(combination.harmony.score) : null;
+      const cognitive = MBTI_COGNITIVE[result.mbti];
+      
+      // MBTI 4축 분석
     const mbtiChars = result.mbti.split('');
 
     return (
@@ -696,32 +778,6 @@ export default function FreePage() {
               </div>
             </div>
             
-            <h2 className="text-2xl font-bold text-white mb-3">
-              🔓 50페이지 프리미엄 리포트
-            </h2>
-            <p className="text-gray-400 mb-6 text-sm">
-              나 자신부터 연애, 인간관계, 커리어까지<br/>
-              모든 스펙트럼의 완전한 분석을 받아보세요
-            </p>
-            
-            <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4 mb-6">
-              <div className="flex flex-wrap justify-center gap-3 text-xs text-gray-400">
-                <span>✓ 인지기능 스택 완전 분석</span>
-                <span>✓ 시너지 5가지 전략</span>
-                <span>✓ 갈등 해결 가이드</span>
-                <span>✓ 연애/관계 상세</span>
-                <span>✓ 12개월 활용법</span>
-                <span>✓ 실전 가이드</span>
-              </div>
-            </div>
-            
-            <Link 
-              href="/products"
-              className="inline-block w-full max-w-md py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-gray-900 font-bold text-lg rounded-xl hover:opacity-90 transition-all shadow-lg"
-            >
-              프리미엄 리포트 보기 →
-            </Link>
-            
             <button
               onClick={() => { setStep(1); setResult(null); setErrors({}); }}
               className="block w-full max-w-md mx-auto mt-4 py-3 bg-gray-800 text-gray-300 rounded-xl hover:bg-gray-700"
@@ -729,11 +785,223 @@ export default function FreePage() {
               다시 분석하기
             </button>
             
-            <p className="mt-8 text-gray-500 text-xs">© K-Saju by 인사이트 금융경영연구소</p>
+            <p className="mt-8 text-gray-500 text-xs">© K-Saju by 브릿지에이치 연구소</p>
           </div>
         </div>
       </div>
     );
+    } // 개인 분석 끝
+    
+    // 궁합 분석 결과
+    if (result.mode === 'couple') {
+      const myDayStem = STEMS[result.my.saju.day.stem];
+      const myElementInfo = ELEMENTS[myDayStem.element];
+      const partnerDayStem = STEMS[result.partner.saju.day.stem];
+      const partnerElementInfo = ELEMENTS[partnerDayStem.element];
+      
+      // 두 사람의 오행 관계
+      const elementRelation = getElementRelation(myDayStem.element, partnerDayStem.element);
+      
+      return (
+        <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 py-12">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="text-center mb-8">
+              <div className="inline-block px-3 py-1 bg-yellow-500/20 rounded-full text-yellow-400 text-xs font-medium mb-4">
+                💕 궁합 분석 결과
+              </div>
+              <h1 className="text-3xl font-bold text-white mb-4">
+                {result.my.name} × {result.partner.name}
+              </h1>
+            </div>
+
+            {/* 두 사람 카드 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              {/* 내 정보 */}
+              <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-6">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <span>👤</span>
+                  <span>{result.my.name}</span>
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">MBTI</span>
+                    <span className="text-white font-medium">{result.my.mbti}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">일간</span>
+                    <span className="text-white font-medium">{myDayStem.hanja} ({myDayStem.title})</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">오행</span>
+                    <span className="text-white font-medium">{myElementInfo.icon} {myElementInfo.name}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 상대방 정보 */}
+              <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-6">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <span>💑</span>
+                  <span>{result.partner.name}</span>
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">MBTI</span>
+                    <span className="text-white font-medium">{result.partner.mbti}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">일간</span>
+                    <span className="text-white font-medium">{partnerDayStem.hanja} ({partnerDayStem.title})</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">오행</span>
+                    <span className="text-white font-medium">{partnerElementInfo.icon} {partnerElementInfo.name}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 오행 관계 */}
+            <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-6 mb-8">
+              <h3 className="text-xl font-bold text-white mb-4">🔮 오행 관계</h3>
+              <div className="text-center">
+                <div className="text-4xl mb-3">
+                  {myElementInfo.icon} {elementRelation.symbol} {partnerElementInfo.icon}
+                </div>
+                <p className={`text-2xl font-bold mb-2 ${elementRelation.color}`}>
+                  {elementRelation.name}
+                </p>
+                <p className="text-gray-400 text-sm">
+                  {myElementInfo.nameKo}({myElementInfo.name}) ↔ {partnerElementInfo.nameKo}({partnerElementInfo.name})
+                </p>
+              </div>
+            </div>
+
+            {/* 케미 점수 */}
+            <div className="bg-gradient-to-r from-pink-500/10 to-rose-500/10 border border-pink-500/30 rounded-2xl p-8 mb-8">
+              <h3 className="text-xl font-bold text-white mb-6 text-center">💕 궁합 케미 점수</h3>
+              <div className="text-center mb-6">
+                <div className="text-6xl font-bold mb-2 text-pink-400">
+                  {elementRelation.type === 'same' ? '75' : 
+                   elementRelation.type === 'produce' || elementRelation.type === 'supported' ? '85' :
+                   elementRelation.type === 'control' || elementRelation.type === 'controlled' ? '65' : '70'}점
+                </div>
+                <p className="text-gray-300">
+                  {elementRelation.type === 'same' ? '비슷한 에너지로 편안한 관계' : 
+                   elementRelation.type === 'produce' || elementRelation.type === 'supported' ? '서로를 성장시키는 관계' :
+                   elementRelation.type === 'control' || elementRelation.type === 'controlled' ? '도전적이지만 배울 점 많은 관계' : '중립적이고 안정적인 관계'}
+                </p>
+              </div>
+            </div>
+
+            {/* 관계의 특징 */}
+            <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-8 mb-8">
+              <h3 className="text-xl font-bold text-white mb-6">🎯 우리 관계의 특징</h3>
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-lg font-semibold text-pink-400 mb-3">핵심 포인트</h4>
+                  <p className="text-gray-300 leading-relaxed">
+                    {myElementInfo.nameKo} 에너지와 {partnerElementInfo.nameKo} 에너지가 만나면서 
+                    {elementRelation.type === 'same' ? '서로를 이해하기 쉽고 편안한 관계가 형성됩니다. 비슷한 성향으로 공감대가 높지만, 때로는 자극이 부족할 수 있어 새로운 시도가 필요합니다.' :
+                     elementRelation.type === 'produce' ? '한 사람이 상대방을 성장시키는 역동적인 관계입니다. 주는 쪽과 받는 쪽의 균형이 중요하며, 서로의 역할을 존중할 때 가장 빛나는 조합입니다.' :
+                     elementRelation.type === 'supported' ? '상대방으로부터 큰 에너지를 받는 관계입니다. 지지와 응원을 많이 받지만, 의존적이 되지 않도록 주의가 필요합니다.' :
+                     elementRelation.type === 'control' ? '긴장감이 있지만 배울 점이 많은 관계입니다. 서로의 차이를 인정하고 존중할 때 성장할 수 있는 조합입니다.' :
+                     elementRelation.type === 'controlled' ? '상대방에게 도전받는 느낌이 들 수 있는 관계입니다. 자신감을 잃지 않고 균형을 유지하는 것이 중요합니다.' :
+                     '크게 충돌하지도, 강하게 끌리지도 않는 안정적인 관계입니다. 노력 여하에 따라 다양하게 발전할 수 있는 조합입니다.'}
+                  </p>
+                </div>
+                
+                <div>
+                  <h4 className="text-lg font-semibold text-yellow-400 mb-3">주의할 점</h4>
+                  <p className="text-gray-300 leading-relaxed">
+                    두 사람의 {result.my.mbti.charAt(0) === result.partner.mbti.charAt(0) ? '비슷한' : '다른'} 에너지 방향(
+                    {result.my.mbti.charAt(0)}형 vs {result.partner.mbti.charAt(0)}형)이 
+                    {result.my.mbti.charAt(0) === result.partner.mbti.charAt(0) ? 
+                      '편안함을 주지만, 서로에게 새로운 자극이 부족할 수 있습니다.' :
+                      '서로 다른 리듬으로 움직이기 때문에 소통에 더 신경 써야 합니다.'}
+                    {' '}템포 차이를 인정하고 존중하는 것이 관계 유지의 핵심입니다.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 공략법 / 조언 */}
+            <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-8 mb-8">
+              <h3 className="text-xl font-bold text-white mb-6">💡 {type === 'new' ? '첫 만남 공략법' : type === 'dating' ? '관계 유지 조언' : '갈등 해결 팁'}</h3>
+              <div className="space-y-4">
+                <div className="p-5 bg-blue-500/10 border border-blue-500/30 rounded-xl">
+                  <p className="text-blue-300 font-medium mb-2">✓ 효과적인 방법</p>
+                  <p className="text-gray-300 leading-relaxed">
+                    {type === 'new' ? 
+                      (result.partner.mbti.includes('I') ? 
+                        '직진보다는 천천히 신뢰를 쌓아가는 접근이 효과적입니다. 급하게 다가가면 부담스러워할 수 있으니 주의하세요.' :
+                        '솔직하고 적극적인 표현이 호응을 얻을 수 있습니다. 다만 상대방의 공간도 존중해주는 센스가 필요합니다.') :
+                     type === 'dating' ?
+                      '정기적인 데이트와 함께 서로만의 시간도 보장해주세요. 균형 잡힌 거리감이 관계를 더 오래 유지시킵니다.' :
+                      '감정이 격해질 때는 잠시 시간을 가지고 진정한 후 대화하세요. 냉정함을 되찾으면 해결책이 보입니다.'}
+                  </p>
+                </div>
+                
+                <div className="p-5 bg-amber-500/10 border border-amber-500/30 rounded-xl">
+                  <p className="text-amber-300 font-medium mb-2">⚠️ 피해야 할 것</p>
+                  <p className="text-gray-300 leading-relaxed">
+                    {type === 'new' ?
+                      '첫 만남부터 과도한 스킨십이나 깊은 고민 털어놓기는 부담을 줄 수 있습니다.' :
+                     type === 'dating' ?
+                      '당연한 것으로 여기고 감사 표현을 게을리하면 관계가 식을 수 있습니다.' :
+                      '과거의 잘못을 반복해서 들추거나, 제3자를 끌어들이는 것은 상황을 악화시킵니다.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 더 알고 싶다면 */}
+            <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-8 mb-8">
+              <div className="text-center">
+                <div className="text-4xl mb-4">🔒</div>
+                <h3 className="text-xl font-bold text-white mb-4">
+                  더 깊이 알고 싶으신가요?
+                </h3>
+                <p className="text-gray-400 mb-6 text-sm">
+                  전체 리포트에서는 이런 내용도 확인할 수 있어요
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left max-w-2xl mx-auto">
+                  <div className="p-4 bg-gray-900/50 rounded-lg border border-gray-700">
+                    <p className="text-gray-300 text-sm">• 구체적인 갈등 패턴 분석</p>
+                  </div>
+                  <div className="p-4 bg-gray-900/50 rounded-lg border border-gray-700">
+                    <p className="text-gray-300 text-sm">• 화해하는 최적의 타이밍</p>
+                  </div>
+                  <div className="p-4 bg-gray-900/50 rounded-lg border border-gray-700">
+                    <p className="text-gray-300 text-sm">• 권태기 극복 4단계 전략</p>
+                  </div>
+                  <div className="p-4 bg-gray-900/50 rounded-lg border border-gray-700">
+                    <p className="text-gray-300 text-sm">• 재회 가능성 + 체크리스트</p>
+                  </div>
+                </div>
+                <Link 
+                  href="/products"
+                  className="inline-block mt-8 px-10 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-gray-900 font-bold text-lg rounded-xl hover:opacity-90 transition-all shadow-lg"
+                >
+                  전체 궁합 리포트 보기 →
+                </Link>
+              </div>
+            </div>
+
+            {/* 다시 분석하기 */}
+            <div className="text-center">
+              <button
+                onClick={() => { setStep(1); setResult(null); setErrors({}); }}
+                className="px-10 py-3 bg-gray-800 text-gray-300 rounded-xl hover:bg-gray-700"
+              >
+                다시 분석하기
+              </button>
+              <p className="mt-6 text-gray-500 text-xs">© K-Saju by 브릿지에이치 연구소</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
   }
 
   // ==================== 입력 폼 ====================
@@ -743,16 +1011,50 @@ export default function FreePage() {
         <div className="text-center mb-8">
           <div className="inline-block px-3 py-1 bg-yellow-500/20 rounded-full text-yellow-400 text-xs font-medium mb-4">🎁 무료 체험</div>
           <h1 className="text-2xl font-bold text-white mb-2">
-            "나를 이해하면, 관계가 보인다"
+            {currentHeadline.title}
           </h1>
-          <p className="text-gray-400 text-sm leading-relaxed">
-            MBTI × 사주의 융합으로<br/>
-            나 자신부터 연애, 인간관계, 커리어까지<br/>
-            모든 스펙트럼을 아우르는 분석
+          <p className="text-gray-400 text-sm leading-relaxed whitespace-pre-line">
+            {currentHeadline.subtitle}
           </p>
         </div>
 
+        {/* 토글 버튼 - 개인 분석 / 궁합 분석 */}
+        <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-2 mb-6">
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => setAnalysisMode('individual')}
+              className={`py-3 rounded-xl font-semibold transition-all ${
+                analysisMode === 'individual'
+                  ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-gray-900 shadow-lg'
+                  : 'bg-gray-900 text-gray-400 hover:text-gray-300'
+              }`}
+            >
+              🔍 개인 분석
+            </button>
+            <button
+              onClick={() => setAnalysisMode('couple')}
+              className={`py-3 rounded-xl font-semibold transition-all ${
+                analysisMode === 'couple'
+                  ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-gray-900 shadow-lg'
+                  : 'bg-gray-900 text-gray-400 hover:text-gray-300'
+              }`}
+            >
+              💕 궁합 분석
+            </button>
+          </div>
+        </div>
+
         <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-6">
+          {/* 내 정보 헤더 */}
+          {analysisMode === 'couple' && (
+            <div className="mb-6 pb-4 border-b border-gray-700">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <span>👤</span>
+                <span>내 정보</span>
+              </h3>
+            </div>
+          )}
+
           <div className="mb-5">
             <label className="block text-sm text-gray-400 mb-2">이름</label>
             <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -836,6 +1138,102 @@ export default function FreePage() {
             </select>
             {errors.mbti && <p className="text-red-400 text-xs mt-1">{errors.mbti}</p>}
           </div>
+
+          {/* 상대방 정보 입력 (궁합 분석 모드만) */}
+          {analysisMode === 'couple' && (
+            <>
+              <div className="my-8 pt-8 border-t border-gray-700">
+                <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-6">
+                  <span>💑</span>
+                  <span>상대방 정보</span>
+                </h3>
+              </div>
+
+              <div className="mb-5">
+                <label className="block text-sm text-gray-400 mb-2">상대방 이름</label>
+                <input type="text" value={partnerData.name} onChange={(e) => setPartnerData({ ...partnerData, name: e.target.value })}
+                  placeholder="상대방 이름을 입력하세요"
+                  className={`w-full px-4 py-3 bg-gray-900 border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 ${errors.partnerName ? 'border-red-500' : 'border-gray-700'}`} />
+                {errors.partnerName && <p className="text-red-400 text-xs mt-1">{errors.partnerName}</p>}
+              </div>
+
+              <div className="mb-5">
+                <label className="block text-sm text-gray-400 mb-2">상대방 생년월일</label>
+                <div className="flex gap-4 mb-3">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="partnerCalendarType" value="solar" checked={partnerData.calendarType === 'solar'}
+                      onChange={(e) => setPartnerData({ ...partnerData, calendarType: e.target.value, isLeapMonth: false })} className="w-4 h-4" />
+                    <span className="text-gray-300 text-sm">양력</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="partnerCalendarType" value="lunar" checked={partnerData.calendarType === 'lunar'}
+                      onChange={(e) => setPartnerData({ ...partnerData, calendarType: e.target.value })} className="w-4 h-4" />
+                    <span className="text-gray-300 text-sm">음력</span>
+                  </label>
+                  {partnerData.calendarType === 'lunar' && (
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={partnerData.isLeapMonth}
+                        onChange={(e) => setPartnerData({ ...partnerData, isLeapMonth: e.target.checked })} className="w-4 h-4 rounded" />
+                      <span className="text-yellow-400 text-sm">윤달</span>
+                    </label>
+                  )}
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <select value={partnerData.birthYear} onChange={(e) => setPartnerData({ ...partnerData, birthYear: e.target.value })}
+                    className={`px-3 py-3 bg-gray-900 border rounded-xl text-white text-sm focus:outline-none focus:border-yellow-500 ${errors.partnerBirthYear ? 'border-red-500' : 'border-gray-700'}`}>
+                    <option value="" disabled>년</option>
+                    {years.map(y => <option key={y} value={y}>{y}</option>)}
+                  </select>
+                  <select value={partnerData.birthMonth} onChange={(e) => setPartnerData({ ...partnerData, birthMonth: e.target.value })}
+                    className={`px-3 py-3 bg-gray-900 border rounded-xl text-white text-sm focus:outline-none focus:border-yellow-500 ${errors.partnerBirthMonth ? 'border-red-500' : 'border-gray-700'}`}>
+                    <option value="" disabled>월</option>
+                    {months.map(m => <option key={m} value={m}>{m}월</option>)}
+                  </select>
+                  <select value={partnerData.birthDay} onChange={(e) => setPartnerData({ ...partnerData, birthDay: e.target.value })}
+                    className={`px-3 py-3 bg-gray-900 border rounded-xl text-white text-sm focus:outline-none focus:border-yellow-500 ${errors.partnerBirthDay ? 'border-red-500' : 'border-gray-700'}`}>
+                    <option value="" disabled>일</option>
+                    {days.map(d => <option key={d} value={d}>{d}일</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div className="mb-5">
+                <label className="block text-sm text-gray-400 mb-2">상대방 생시 <span className="text-gray-500">(선택)</span></label>
+                <select value={partnerData.birthHour} onChange={(e) => setPartnerData({ ...partnerData, birthHour: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white text-sm focus:outline-none focus:border-yellow-500">
+                  <option value="">모름 / 선택 안함</option>
+                  {SIJI.map(s => <option key={s.value} value={s.value}>{s.label} ({s.time})</option>)}
+                </select>
+              </div>
+
+              <div className="mb-5">
+                <label className="block text-sm text-gray-400 mb-2">상대방 성별</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button type="button" onClick={() => setPartnerData({ ...partnerData, gender: 'male' })}
+                    className={`py-3 rounded-xl font-medium transition-all text-sm ${partnerData.gender === 'male' ? 'bg-blue-600 text-white' : 'bg-gray-900 border border-gray-700 text-gray-400'}`}>
+                    👨 남성
+                  </button>
+                  <button type="button" onClick={() => setPartnerData({ ...partnerData, gender: 'female' })}
+                    className={`py-3 rounded-xl font-medium transition-all text-sm ${partnerData.gender === 'female' ? 'bg-pink-600 text-white' : 'bg-gray-900 border border-gray-700 text-gray-400'}`}>
+                    👩 여성
+                  </button>
+                </div>
+                {errors.partnerGender && <p className="text-red-400 text-xs mt-1">{errors.partnerGender}</p>}
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm text-gray-400 mb-2">상대방 MBTI <span className="text-yellow-400">*필수</span></label>
+                <select value={partnerData.mbti} onChange={(e) => setPartnerData({ ...partnerData, mbti: e.target.value })}
+                  className={`w-full px-4 py-3 bg-gray-900 border rounded-xl text-white text-sm focus:outline-none focus:border-yellow-500 ${errors.partnerMbti ? 'border-red-500' : 'border-gray-700'}`}>
+                  <option value="">MBTI를 선택하세요</option>
+                  {Object.entries(MBTI_TYPES).map(([type, info]) => (
+                    <option key={type} value={type}>{type} - {info.title}</option>
+                  ))}
+                </select>
+                {errors.partnerMbti && <p className="text-red-400 text-xs mt-1">{errors.partnerMbti}</p>}
+              </div>
+            </>
+          )}
 
           <button onClick={handleAnalyze}
             className="w-full py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-gray-900 font-bold rounded-xl hover:opacity-90 transition-all">

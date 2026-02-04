@@ -20,7 +20,7 @@ const faqs = [
       },
       {
         q: 'MBTI를 모르면 이용할 수 없나요?',
-        a: 'K-Saju 기본 상품은 사주팔자만으로 분석되므로 MBTI 없이도 이용 가능합니다. K-Saju 프리미엄 상품을 이용하시려면 MBTI가 필요합니다. MBTI 검사는 무료로 온라인에서 진행하실 수 있습니다.'
+        a: 'MBTI는 필수 입력 항목입니다. 걱정 마세요! 무료 검사 5분이면 끝납니다.\n\n📌 무료 검사: 16personalities.com/ko\n💡 팁: 검사 결과를 메모해두고 돌아오세요!'
       }
     ]
   },
@@ -37,7 +37,7 @@ const faqs = [
       },
       {
         q: '영수증/세금계산서 발급이 가능한가요?',
-        a: '결제 완료 시 자동으로 이메일로 영수증이 발송됩니다. 세금계산서가 필요하신 경우 고객센터(amoretto75@naver.com)로 문의해 주세요.'
+        a: '결제 완료 시 자동으로 이메일로 영수증이 발송됩니다. 세금계산서가 필요하신 경우 고객센터(fatemate2026@gmail.com)로 문의해 주세요.'
       }
     ]
   },
@@ -71,7 +71,7 @@ const faqs = [
       },
       {
         q: '문의는 어디로 하면 되나요?',
-        a: '이메일(amoretto75@naver.com)로 문의해 주시면 영업일 기준 24시간 이내에 답변 드립니다. 전화 문의는 010-2806-2497로 연락 주세요.'
+        a: '이메일(fatemate2026@gmail.com)로 문의해 주시면 영업일 기준 24시간 이내에 답변 드립니다.'
       }
     ]
   }
@@ -126,7 +126,7 @@ export default function FAQPage() {
                       </button>
                       {isOpen && (
                         <div className="px-6 pb-4">
-                          <p className="text-gray-600 leading-relaxed">{faq.a}</p>
+                          <p className="text-gray-600 leading-relaxed whitespace-pre-line">{faq.a}</p>
                         </div>
                       )}
                     </div>
@@ -137,30 +137,21 @@ export default function FAQPage() {
           ))}
         </div>
 
-        {/* 추가 문의 안내 */}
+        {/* 추가 문의 안내 - 전화문의 삭제, 이메일만 */}
         <div className="mt-12 bg-primary-50 rounded-2xl p-8 text-center">
           <h3 className="text-xl font-bold mb-4">찾으시는 답변이 없나요?</h3>
           <p className="text-gray-600 mb-6">
             고객센터로 문의해 주시면 친절하게 안내해 드립니다.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex justify-center">
             <a 
-              href="mailto:amoretto75@naver.com"
-              className="inline-flex items-center justify-center gap-2 bg-white px-6 py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors"
+              href="mailto:fatemate2026@gmail.com"
+              className="inline-flex items-center justify-center gap-2 bg-primary-600 text-white px-8 py-4 rounded-xl font-medium hover:bg-primary-700 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
               이메일 문의
-            </a>
-            <a 
-              href="tel:010-2806-2497"
-              className="inline-flex items-center justify-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-primary-700 transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              전화 문의
             </a>
           </div>
         </div>

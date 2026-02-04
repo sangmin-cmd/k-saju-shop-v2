@@ -2,26 +2,6 @@ import { Product } from './types';
 
 export const products: Product[] = [
   {
-    id: 'basic',
-    name: '정통 사주 분석',
-    description: '오행 밸런스 · 2026 운세 · 타고난 성향',
-    price: 6900,
-    originalPrice: 13800,
-    features: [
-      '사주팔자 완전 분석',
-      '오행 분포 & 균형 진단',
-      '십성으로 보는 성격 유형',
-      '2026년 운세 흐름',
-      '월별 운세 가이드',
-      '상세 PDF 리포트'
-    ],
-    pages: 15,
-    category: 'basic',
-    image: '/images/basic.png',
-    icon: '☯️',
-    badge: '런칭 50%'
-  },
-  {
     id: 'cross',
     name: '정통사주 × MBTI 분석',
     description: '160가지 페르소나 · 강점/약점 · 액션 가이드',
@@ -36,7 +16,6 @@ export const products: Product[] = [
       '건강운 & 대인관계 전략',
       '상세 PDF 리포트'
     ],
-    pages: 30,
     category: 'premium',
     image: '/images/cross.png',
     icon: '🧬',
@@ -58,11 +37,31 @@ export const products: Product[] = [
       '연애 타이밍 가이드',
       '상세 PDF 리포트'
     ],
-    pages: 25,
     category: 'compatibility',
     image: '/images/fatemate.png',
     icon: '💫',
     badge: '베스트',
+    popular: true
+  },
+  {
+    id: 'fortune',
+    name: '재물운 × 사업 타이밍',
+    description: '재운 흐름 · 투자 시기 · 업종 적합도',
+    price: 12900,
+    originalPrice: 25800,
+    features: [
+      '재물운 흐름 (월별 타이밍)',
+      '사업 적합도 & 업종 추천',
+      '투자 시기 & 리스크 진단',
+      '월별 재운 흐름 & 기회 포착',
+      '자산 방어 & 공격 전략',
+      '동업 파트너 시너지 분석',
+      '상세 PDF 리포트'
+    ],
+    category: 'fortune',
+    image: '/images/money.png',
+    icon: '💰',
+    badge: '런칭 50%',
     popular: true
   }
 ];

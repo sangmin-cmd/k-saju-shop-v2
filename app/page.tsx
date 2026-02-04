@@ -2,52 +2,61 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import ProductCard from './components/ProductCard';
 import { products, popularProducts } from './lib/products';
 import UseCasesSection from './components/UseCasesSection';
 
 export default function Home() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState<string>('new');
+
+  // 카드 클릭 핸들러
+  const handleCardClick = (cardType: string) => {
+    setExpandedCard(expandedCard === cardType ? null : cardType);
+    if (expandedCard !== cardType) {
+      setSelectedType(cardType);
+    }
+  };
+
+  // 통합 CTA 클릭
+  const handleCtaClick = () => {
+    router.push(`/free?type=${selectedType}`);
+  };
 
   const reportPreviews = [
     {
-      title: '핵심 요약',
-      subtitle: '나의 성향·강점·주의 포인트 한 장 정리',
-      gradient: 'from-blue-500 to-purple-600',
-      content: {
-        type: 'ENFP × 甲木',
-        label: '성장하는 아이디어',
-        keywords: ['#직진형연애러', '#감성폭발타입', '#사랑에올인형'],
-        insight: '끊임없이 새로운 도전을 멈추지 않는 에너자이저. 연애에선 직진 본능이 강하지만, 감정 조절이 필요한 시기'
-      }
-    },
-    {
-      title: '오행/십성 밸런스',
-      subtitle: '부족한 기운 / 보완 전략',
-      gradient: 'from-emerald-500 to-teal-600',
-      content: {
-        elements: [
-          { name: '木', value: 4, color: 'bg-green-400' },
-          { name: '火', value: 2, color: 'bg-red-400' },
-          { name: '土', value: 3, color: 'bg-yellow-400' },
-          { name: '金', value: 1, color: 'bg-gray-300' },
-          { name: '水', value: 2, color: 'bg-blue-400' }
-        ],
-        recommendation: '金 에너지 보완 필요 → 규칙적인 루틴, 마무리 습관 강화'
-      }
-    },
-    {
-      title: '2026 액션 가이드',
-      subtitle: '시기별 추천 행동 & 리스크 관리',
+      title: '궁합 케미 점수',
+      subtitle: '우리 둘의 조화도 한눈에',
       gradient: 'from-pink-500 to-rose-600',
       content: {
-        periods: [
-          { month: '1~3월', action: '준비/학습', risk: '성급한 시작' },
-          { month: '4~6월', action: '실행/도전', risk: '과욕' },
-          { month: '7~9월', action: '조정/보완', risk: '번아웃' }
-        ],
-        keyMessage: '상반기에 씨 뿌리고, 하반기에 거두는 흐름'
+        type: 'ESTJ × 丙火 & ISTJ × 乙木',
+        score: '85점',
+        grade: '매우 좋음',
+        summary: '이 조합은 서로 다른 에너지가 균형을 이루는 관계입니다. 한 사람의 열정적인 추진력이 상대방의 차분한 신중함을 만나면서 안정적이면서도 역동적인 관계가 형성됩니다.'
+      }
+    },
+    {
+      title: '관계의 특징',
+      subtitle: '우리는 어떤 커플일까?',
+      gradient: 'from-emerald-500 to-teal-600',
+      content: {
+        strength: '불타는 열정 × 차분한 안정',
+        description: '두 사람의 속도 차이가 답답함을 만들 수 있어 서로의 템포를 존중하는 것이 중요합니다. 급할 때와 천천히 갈 때를 구분하는 지혜가 필요한 관계입니다.',
+        keywords: ['#균형잡힌조합', '#안정적성장', '#템포조절필수']
+      }
+    },
+    {
+      title: '첫 만남 공략법',
+      subtitle: '어떻게 다가가야 할까?',
+      gradient: 'from-blue-500 to-purple-600',
+      content: {
+        tip: '직진보다는 천천히 신뢰를 쌓아가는 접근이 효과적입니다.',
+        warning: '급하게 다가가면 부담스러워할 수 있으니 주의하세요.',
+        locked: ['구체적인 갈등 패턴', '화해하는 최적의 방법', '권태기 극복 전략', '재회 가능성 분석']
       }
     }
   ];
@@ -115,454 +124,701 @@ export default function Home() {
           {/* H1 - 메인 카피 (연애 중심) */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight tracking-tight"
             style={{ color: '#F5F5F0' }}>
-            그 사람, 진심일까?<br />우리, 끝까지 갈 수 있을까?
+            우리, 얼마나 잘 맞을까?
           </h1>
           
           {/* Sub - 부드러운 크림톤 */}
           <p className="text-lg md:text-xl mb-10 max-w-3xl mx-auto leading-relaxed"
             style={{ color: 'rgba(245, 245, 240, 0.75)' }}>
-            막연한 감만으로는 알 수 없는 것들.<br className="hidden md:block" />
-            <span className="text-amber-300 font-semibold">사주 × MBTI</span> 구조 분석으로 연애의 본질을 읽어드립니다.
+            <span className="text-amber-300 font-semibold">사주 × MBTI</span> 160가지 유형으로<br className="hidden md:block" />
+            지금 우리 관계를 정확히 알려드려요
           </p>
 
-          {/* 후킹 질문 3개 - 연애 중심 */}
-          <div className="flex flex-wrap justify-center gap-5 mb-14">
-            <div className="px-5 py-3 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-              <span style={{ color: 'rgba(245, 245, 240, 0.85)' }} className="text-sm">💭 "왜 나는 맨날 이런 사람한테 끌릴까?"</span>
-            </div>
-            <div className="px-5 py-3 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-              <span style={{ color: 'rgba(245, 245, 240, 0.85)' }} className="text-sm">💕 "썸일까 쌈일까? 고백해도 될까?"</span>
-            </div>
-            <div className="px-5 py-3 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-              <span style={{ color: 'rgba(245, 245, 240, 0.85)' }} className="text-sm">✨ "올해 언제가 연애 타이밍일까?"</span>
-            </div>
-          </div>
-
-          {/* CTA 버튼 - 프리미엄 스타일 */}
-          <div className="flex flex-col sm:flex-row gap-5 justify-center items-center mb-14">
-            <Link 
-              href="/free" 
-              className="group px-10 py-4 bg-white text-gray-900 text-lg font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1"
-            >
-              무료 체험하기
-            </Link>
-            <Link 
-              href="/products" 
-              className="px-10 py-4 text-lg font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 border-2"
-              style={{ 
-                background: 'linear-gradient(135deg, #d4af37 0%, #b8960c 100%)',
-                borderColor: '#d4af37',
-                color: '#0a0f1a'
-              }}
-            >
-              프리미엄 분석 →
-            </Link>
-          </div>
-
-          {/* 신뢰 배지 - 더 세련된 스타일 */}
-          <div className="flex flex-wrap justify-center gap-8 text-sm" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>
-            <div className="flex items-center gap-2">
-              <span className="text-amber-400">★</span>
-              <span>평균 4.9점</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>📊</span>
-              <span>1,000+ 분석 완료</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-amber-400">✓</span>
-              <span>만족 보장 · 환불 정책</span>
-            </div>
-          </div>
-        </div>
-
-        {/* 하단 그라디언트 */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent"></div>
-      </section>
-
-      {/* ========== 2. 결과물 미리보기 - 프리미엄 글래스모피즘 ========== */}
-      <section className="py-28 px-4" id="preview"
-        style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f8f6f3 50%, #ffffff 100%)' }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 bg-amber-50 text-amber-700 rounded-full text-sm font-medium mb-5 border border-amber-200">
-              리포트 미리보기
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-5">
-              동양의 지혜 × 서양의 분석
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              당신의 <strong className="text-gray-900">기질(사주)</strong>과 <strong className="text-gray-900">태도(MBTI)</strong>를 결합해<br className="hidden md:block" />
-              '공유하고 싶어지는 한 장의 요약'으로 정리해 드립니다.
+          {/* 상황 선택 안내 */}
+          <div className="text-center mb-8">
+            <p className="text-lg" style={{ color: 'rgba(245, 245, 240, 0.9)' }}>
+              💡 어떤 상황인가요?
+            </p>
+            <p className="text-sm mt-1" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>
+              선택하면 맞춤 분석을 받아요
             </p>
           </div>
 
-          {/* 탭 - 더 명확한 활성화 표시 */}
-          <div className="flex justify-center gap-2 mb-10">
+          {/* 카드 4개 - 아코디언 방식 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mb-8">
+            {/* 카드 1: 처음 만나요 */}
+            <button 
+              onClick={() => handleCardClick('new')}
+              className="group text-left"
+            >
+              <div className={`bg-white/5 backdrop-blur-sm rounded-2xl border p-6 transition-all duration-300 ${
+                expandedCard === 'new' 
+                  ? 'border-amber-400 bg-white/10 shadow-2xl' 
+                  : 'border-white/10 hover:bg-white/10 hover:border-amber-400/50'
+              } hover:-translate-y-2`}>
+                <div className="text-4xl mb-4">🌱</div>
+                <h3 className="text-xl font-bold mb-3" style={{ color: '#F5F5F0' }}>
+                  처음 만나요
+                </h3>
+                <p className="text-sm mb-4 leading-relaxed" style={{ color: 'rgba(245, 245, 240, 0.7)' }}>
+                  썸 단계 필수!<br/>
+                  고백 전략 & 타이밍
+                </p>
+                
+                {/* 확장 콘텐츠 */}
+                {expandedCard === 'new' && (
+                  <div className="mt-6 pt-6 border-t border-amber-400/30 space-y-4 text-left animate-fadeIn">
+                    <p className="text-sm font-semibold mb-4" style={{ color: '#F5F5F0' }}>
+                      📋 이런 내용을 알려드려요:
+                    </p>
+                    
+                    <div className="space-y-3">
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>상대방의 연애 DNA</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>성향과 호감 포인트 분석</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>마음을 얻는 공략법</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>효과적인 어필 방법</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>연락 타이밍 점수</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>지금 연락해도 될까? (예: 55점)</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>절대 하면 안 되는 것</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>NG 행동 리스트</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                <div className={`text-amber-400 text-sm font-medium transition-transform ${
+                  expandedCard === 'new' ? 'mt-4' : ''
+                } group-hover:translate-x-2`}>
+                  {expandedCard === 'new' ? '✓ 선택됨' : '상세보기 →'}
+                </div>
+              </div>
+            </button>
+
+            {/* 카드 2: 연애 중이에요 */}
+            <button 
+              onClick={() => handleCardClick('dating')}
+              className="group text-left"
+            >
+              <div className={`bg-white/5 backdrop-blur-sm rounded-2xl border p-6 transition-all duration-300 ${
+                expandedCard === 'dating' 
+                  ? 'border-amber-400 bg-white/10 shadow-2xl' 
+                  : 'border-white/10 hover:bg-white/10 hover:border-amber-400/50'
+              } hover:-translate-y-2`}>
+                <div className="text-4xl mb-4">💕</div>
+                <h3 className="text-xl font-bold mb-3" style={{ color: '#F5F5F0' }}>
+                  연애 중이에요
+                </h3>
+                <p className="text-sm mb-4 leading-relaxed" style={{ color: 'rgba(245, 245, 240, 0.7)' }}>
+                  더 깊은 관계<br/>
+                  유지 & 성장 비법
+                </p>
+                
+                {/* 확장 콘텐츠 */}
+                {expandedCard === 'dating' && (
+                  <div className="mt-6 pt-6 border-t border-amber-400/30 space-y-4 text-left animate-fadeIn">
+                    <p className="text-sm font-semibold mb-4" style={{ color: '#F5F5F0' }}>
+                      📋 이런 내용을 알려드려요:
+                    </p>
+                    
+                    <div className="space-y-3">
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>우리 관계의 강점</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>함께 불타오르는 케미</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>주의해야 할 포인트</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>감정 충돌 예방법</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>권태기 극복 방법</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>4단계 구체적 전략</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>관계 유지 조언</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>3가지 실천 가이드</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                <div className={`text-amber-400 text-sm font-medium transition-transform ${
+                  expandedCard === 'dating' ? 'mt-4' : ''
+                } group-hover:translate-x-2`}>
+                  {expandedCard === 'dating' ? '✓ 선택됨' : '상세보기 →'}
+                </div>
+              </div>
+            </button>
+
+            {/* 카드 3: 고민이 있어요 */}
+            <button 
+              onClick={() => handleCardClick('problem')}
+              className="group text-left"
+            >
+              <div className={`bg-white/5 backdrop-blur-sm rounded-2xl border p-6 transition-all duration-300 ${
+                expandedCard === 'problem' 
+                  ? 'border-amber-400 bg-white/10 shadow-2xl' 
+                  : 'border-white/10 hover:bg-white/10 hover:border-amber-400/50'
+              } hover:-translate-y-2`}>
+                <div className="text-4xl mb-4">💭</div>
+                <h3 className="text-xl font-bold mb-3" style={{ color: '#F5F5F0' }}>
+                  고민이 있어요
+                </h3>
+                <p className="text-sm mb-4 leading-relaxed" style={{ color: 'rgba(245, 245, 240, 0.7)' }}>
+                  막힌 관계<br/>
+                  갈등 해결 전략
+                </p>
+                
+                {/* 확장 콘텐츠 */}
+                {expandedCard === 'problem' && (
+                  <div className="mt-6 pt-6 border-t border-amber-400/30 space-y-4 text-left animate-fadeIn">
+                    <p className="text-sm font-semibold mb-4" style={{ color: '#F5F5F0' }}>
+                      📋 이런 내용을 알려드려요:
+                    </p>
+                    
+                    <div className="space-y-3">
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>우리의 갈등 패턴</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>火 vs 木 스타일 분석</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>쿨링 타임 가이드</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>나 10분 vs 상대 30분</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>효과적인 화해 방법</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>성향별 맞춤 전략</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>재회 가능성 분석</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>84% + 체크리스트</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                <div className={`text-amber-400 text-sm font-medium transition-transform ${
+                  expandedCard === 'problem' ? 'mt-4' : ''
+                } group-hover:translate-x-2`}>
+                  {expandedCard === 'problem' ? '✓ 선택됨' : '상세보기 →'}
+                </div>
+              </div>
+            </button>
+
+            {/* 카드 4: 나를 알고 싶어요 */}
+            <button 
+              onClick={() => handleCardClick('self')}
+              className="group text-left"
+            >
+              <div className={`bg-white/5 backdrop-blur-sm rounded-2xl border p-6 transition-all duration-300 ${
+                expandedCard === 'self' 
+                  ? 'border-amber-400 bg-white/10 shadow-2xl' 
+                  : 'border-white/10 hover:bg-white/10 hover:border-amber-400/50'
+              } hover:-translate-y-2`}>
+                <div className="text-4xl mb-4">🔍</div>
+                <h3 className="text-xl font-bold mb-3" style={{ color: '#F5F5F0' }}>
+                  나를 알고 싶어요
+                </h3>
+                <p className="text-sm mb-4 leading-relaxed" style={{ color: 'rgba(245, 245, 240, 0.7)' }}>
+                  나 자신 이해<br/>
+                  성향 & 강점 분석
+                </p>
+                
+                {/* 확장 콘텐츠 */}
+                {expandedCard === 'self' && (
+                  <div className="mt-6 pt-6 border-t border-amber-400/30 space-y-4 text-left animate-fadeIn">
+                    <p className="text-sm font-semibold mb-4" style={{ color: '#F5F5F0' }}>
+                      📋 이런 내용을 알려드려요:
+                    </p>
+                    
+                    <div className="space-y-3">
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>나의 핵심 성향</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>MBTI × 사주 조합 분석</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>숨겨진 강점 발견</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>오행 밸런스로 보는 재능</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>연애 스타일 파악</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>내가 사랑하는 방식</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-3">
+                        <span className="text-amber-400 mt-0.5">✓</span>
+                        <div>
+                          <p className="font-medium mb-1" style={{ color: '#F5F5F0' }}>주의할 포인트</p>
+                          <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>성장 방향 제시</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                <div className={`text-amber-400 text-sm font-medium transition-transform ${
+                  expandedCard === 'self' ? 'mt-4' : ''
+                } group-hover:translate-x-2`}>
+                  {expandedCard === 'self' ? '✓ 선택됨' : '상세보기 →'}
+                </div>
+              </div>
+            </button>
+          </div>
+
+          {/* 통합 CTA */}
+          <div className="text-center mt-10">
+            <button
+              onClick={handleCtaClick}
+              className="px-12 py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-lg font-bold rounded-xl hover:from-amber-600 hover:to-amber-700 transition-all shadow-2xl hover:shadow-amber-500/50 hover:-translate-y-1 transform"
+            >
+              3분 무료 체험하기
+            </button>
+            <p className="text-xs mt-3" style={{ color: 'rgba(245, 245, 240, 0.5)' }}>
+              {expandedCard === 'new' && '썸 단계 전략을 먼저 확인해보세요'}
+              {expandedCard === 'dating' && '연애 관계 분석을 먼저 확인해보세요'}
+              {expandedCard === 'problem' && '갈등 해결법을 먼저 확인해보세요'}
+              {expandedCard === 'self' && '나 자신을 먼저 이해해보세요'}
+              {!expandedCard && '위 카드를 선택하고 시작하세요'}
+            </p>
+          </div>
+
+          {/* 신뢰 지표 */}
+          <div className="flex items-center justify-center gap-8 mt-12 pt-8 border-t border-white/10">
+            <div className="text-center">
+              <div className="text-2xl font-bold mb-1" style={{ color: '#d4af37' }}>160가지</div>
+              <div className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>유형 조합</div>
+            </div>
+            <div className="w-px h-10 bg-white/10"></div>
+            <div className="text-center">
+              <div className="text-2xl font-bold mb-1" style={{ color: '#d4af37' }}>100%</div>
+              <div className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>자체 엔진</div>
+            </div>
+            <div className="w-px h-10 bg-white/10"></div>
+            <div className="text-center">
+              <div className="text-2xl font-bold mb-1" style={{ color: '#d4af37' }}>24시간</div>
+              <div className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>이내 발송</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========== 2. SOCIAL PROOF - 후기 ========== */}
+      <section className="py-20 px-4" style={{ background: 'linear-gradient(180deg, #0a0f1a 0%, #050810 100%)' }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="inline-block px-4 py-1.5 bg-amber-500/10 text-amber-400 rounded-full text-sm font-medium mb-5 border border-amber-500/30">
+              Real Reviews
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#F5F5F0' }}>
+              이미 많은 분들이 확인했어요
+            </h2>
+            <p className="text-lg" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>
+              연애의 답, 데이터로 찾았습니다
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {reviews.map((review, idx) => (
+              <div key={idx} 
+                className="rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.03)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)'
+                }}>
+                <div className="flex gap-1 mb-4">
+                  {[...Array(review.rating)].map((_, i) => (
+                    <span key={i} className="text-amber-400">★</span>
+                  ))}
+                </div>
+                <p className="mb-4 leading-relaxed text-sm" style={{ color: 'rgba(245, 245, 240, 0.85)' }}>
+                  {review.text}
+                </p>
+                <p className="text-xs" style={{ color: 'rgba(245, 245, 240, 0.5)' }}>
+                  {review.author}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link 
+              href="/reviews" 
+              className="inline-flex items-center gap-2 px-8 py-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all border border-white/10 hover:border-amber-400/50"
+              style={{ color: '#F5F5F0' }}
+            >
+              <span>후기 더보기</span>
+              <span>→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ========== 3. PREVIEW - 리포트 샘플 ========== */}
+      <section className="py-20 px-4" style={{ background: 'linear-gradient(180deg, #050810 0%, #0a1628 100%)' }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="inline-block px-4 py-1.5 bg-purple-500/10 text-purple-300 rounded-full text-sm font-medium mb-5 border border-purple-500/30">
+              Report Preview
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#F5F5F0' }}>
+              이런 리포트를 받게 됩니다
+            </h2>
+            <p className="text-lg" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>
+              복잡한 사주, 한눈에 정리
+            </p>
+          </div>
+
+          {/* 탭 네비게이션 */}
+          <div className="flex justify-center gap-4 mb-10 flex-wrap">
             {reportPreviews.map((preview, idx) => (
               <button
                 key={idx}
                 onClick={() => setActiveTab(idx)}
-                className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
-                  activeTab === idx
-                    ? 'bg-gradient-to-r from-gray-900 to-gray-800 text-white shadow-xl scale-105 border-b-4 border-amber-500'
-                    : 'bg-white text-gray-600 hover:bg-gray-50 shadow-md border border-gray-200'
+                className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+                  activeTab === idx 
+                    ? 'bg-gradient-to-r text-white shadow-lg' 
+                    : 'bg-white/5 hover:bg-white/10'
                 }`}
+                style={activeTab === idx ? { 
+                  backgroundImage: `linear-gradient(135deg, ${preview.gradient.includes('blue') ? '#3b82f6' : preview.gradient.includes('emerald') ? '#10b981' : '#ec4899'}, ${preview.gradient.includes('purple') ? '#9333ea' : preview.gradient.includes('teal') ? '#14b8a6' : '#f43f5e'})`
+                } : { color: 'rgba(245, 245, 240, 0.7)' }}
               >
                 {preview.title}
               </button>
             ))}
           </div>
 
-          {/* 미리보기 카드 - 글래스모피즘 + 골드 테두리 */}
-          <div className="max-w-2xl mx-auto">
-            {/* 배경 효과 */}
-            <div className="relative">
-              {/* 은은한 오로라 배경 */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-amber-500/20 rounded-[2rem] blur-2xl"></div>
-              
-              {/* 메인 카드 - 글래스모피즘 */}
-              <div className="relative rounded-3xl p-8 md:p-10 shadow-2xl border border-amber-500/30"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(26, 39, 68, 0.95) 0%, rgba(36, 59, 97, 0.95) 50%, rgba(26, 39, 68, 0.95) 100%)',
-                  backdropFilter: 'blur(20px)'
-                }}>
-                
-                {/* 골드 코너 장식 */}
-                <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-amber-500/50 rounded-tl-3xl"></div>
-                <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-amber-500/50 rounded-br-3xl"></div>
-                
-                <div className="mb-8">
-                  <h3 className="text-2xl font-bold mb-2" style={{ color: '#F5F5F0' }}>{reportPreviews[activeTab].title}</h3>
-                  <p style={{ color: 'rgba(245, 245, 240, 0.7)' }}>{reportPreviews[activeTab].subtitle}</p>
-                </div>
-                
-                {activeTab === 0 && (
-                  <div className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10">
-                    {/* ENFP × 甲木 - 폰트 대비 */}
-                    <div className="text-center mb-8">
-                      <div className="flex items-center justify-center gap-3">
-                        <span className="text-4xl font-bold tracking-tight" style={{ color: '#F5F5F0', fontFamily: 'system-ui, sans-serif' }}>ENFP</span>
-                        <span className="text-2xl text-amber-400">×</span>
-                        <span className="text-4xl font-bold" style={{ color: '#d4af37', fontFamily: 'serif' }}>甲木</span>
-                      </div>
-                      <p className="mt-3 text-lg" style={{ color: 'rgba(245, 245, 240, 0.8)' }}>성장하는 아이디어</p>
+          {/* 탭 콘텐츠 */}
+          <div className="rounded-3xl overflow-hidden"
+            style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)'
+            }}>
+            {activeTab === 0 && (
+              <div className="p-10">
+                <div className="max-w-2xl mx-auto">
+                  <div className="text-center mb-8">
+                    <div className="inline-block px-5 py-2 rounded-full mb-4"
+                      style={{ background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(244, 63, 94, 0.15))', border: '1px solid rgba(236, 72, 153, 0.3)' }}>
+                      <span className="text-sm font-medium" style={{ color: '#f9a8d4' }}>{reportPreviews[0].content.type}</span>
                     </div>
                     
-                    {/* 키워드 뱃지 - 연애 유형 배지 */}
-                    <div className="flex justify-center gap-3 mb-8">
-                      {reportPreviews[0].content.keywords.map((kw, i) => (
-                        <span key={i} className="px-4 py-2 rounded-full text-sm font-medium border border-amber-500/30 shadow-lg"
-                          style={{ 
-                            background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%)',
-                            color: '#d4af37'
-                          }}>
-                          {kw}
+                    <div className="mb-6">
+                      <div className="text-6xl font-bold mb-2" style={{ color: '#f472b6' }}>
+                        {reportPreviews[0].content.score}
+                      </div>
+                      <div className="text-lg" style={{ color: '#f9a8d4' }}>
+                        {reportPreviews[0].content.grade}
+                      </div>
+                    </div>
+
+                    <p className="text-base leading-relaxed" style={{ color: 'rgba(245, 245, 240, 0.8)' }}>
+                      {reportPreviews[0].content.summary}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 1 && (
+              <div className="p-10">
+                <div className="max-w-2xl mx-auto">
+                  <div className="mb-8 text-center">
+                    <h3 className="text-2xl font-bold mb-4" style={{ color: '#F5F5F0' }}>
+                      {reportPreviews[1].content.strength}
+                    </h3>
+                    <div className="flex gap-2 justify-center flex-wrap mb-6">
+                      {reportPreviews[1].content.keywords.map((keyword: string, i: number) => (
+                        <span key={i} className="px-3 py-1 rounded-full text-xs" 
+                          style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#6ee7b7' }}>
+                          {keyword}
                         </span>
                       ))}
                     </div>
-                    
-                    {/* 설명 - 강조 처리 */}
-                    <p className="text-center leading-relaxed text-lg" style={{ color: 'rgba(245, 245, 240, 0.9)' }}>
-                      끊임없이 새로운 도전을 멈추지 않는 에너자이저.<br />
-                      연애에선 <span className="text-amber-400 font-semibold">직진 본능</span>이 강하지만, 감정 조절이 필요한 시기
+                  </div>
+                  
+                  <div className="p-6 rounded-xl" 
+                    style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                    <p className="text-base leading-relaxed" style={{ color: 'rgba(245, 245, 240, 0.8)' }}>
+                      {reportPreviews[1].content.description}
                     </p>
                   </div>
-                )}
-                
-                {activeTab === 1 && (
-                  <div className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10">
-                    <div className="space-y-4 mb-6">
-                      {reportPreviews[1].content.elements.map((el, i) => (
-                        <div key={i} className="flex items-center gap-4">
-                          <span className="w-10 text-xl font-bold" style={{ color: '#d4af37', fontFamily: 'serif' }}>{el.name}</span>
-                          <div className="flex-1 bg-white/10 rounded-full h-5 overflow-hidden border border-white/10">
-                            <div className={`${el.color} h-full rounded-full`} style={{width: `${el.value * 20}%`}}></div>
-                          </div>
-                          <span className="w-8 text-right font-medium" style={{ color: '#F5F5F0' }}>{el.value}</span>
-                        </div>
-                    ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 2 && (
+              <div className="p-10">
+                <div className="max-w-2xl mx-auto">
+                  <div className="space-y-6 mb-8">
+                    <div className="p-6 rounded-xl"
+                      style={{ background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+                      <div className="text-lg font-bold mb-3" style={{ color: '#93c5fd' }}>💡 공략 팁</div>
+                      <p className="text-base leading-relaxed" style={{ color: 'rgba(245, 245, 240, 0.8)' }}>
+                        {reportPreviews[2].content.tip}
+                      </p>
                     </div>
-                    <div className="bg-amber-500/10 rounded-xl p-4 text-center border border-amber-500/20">
-                      <p className="text-sm" style={{ color: '#d4af37' }}>{reportPreviews[1].content.recommendation}</p>
+                    
+                    <div className="p-6 rounded-xl"
+                      style={{ background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.2)' }}>
+                      <div className="text-lg font-bold mb-3" style={{ color: '#fcd34d' }}>⚠️ 주의사항</div>
+                      <p className="text-base leading-relaxed" style={{ color: 'rgba(245, 245, 240, 0.8)' }}>
+                        {reportPreviews[2].content.warning}
+                      </p>
                     </div>
                   </div>
-                )}
-                
-                {activeTab === 2 && (
-                  <div className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10">
-                    <div className="space-y-4 mb-6">
-                      {reportPreviews[2].content.periods.map((period, i) => (
-                        <div key={i} className="flex items-center justify-between bg-white/5 rounded-xl p-4 border border-white/10">
-                          <span className="font-bold" style={{ color: '#d4af37' }}>{period.month}</span>
-                          <span className="text-emerald-400 font-medium">✓ {period.action}</span>
-                          <span className="text-rose-400 font-medium">⚠ {period.risk}</span>
-                        </div>
+                  
+                  <div className="p-6 rounded-xl text-center"
+                    style={{ background: 'rgba(107, 114, 128, 0.1)', border: '1px solid rgba(107, 114, 128, 0.2)' }}>
+                    <div className="text-2xl mb-3">🔒</div>
+                    <p className="font-bold mb-3" style={{ color: '#F5F5F0' }}>전체 리포트에서 확인하세요</p>
+                    <div className="space-y-2">
+                      {reportPreviews[2].content.locked.map((item: string, idx: number) => (
+                        <p key={idx} className="text-sm" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>
+                          • {item}
+                        </p>
                       ))}
                     </div>
-                    <div className="bg-amber-500/10 rounded-xl p-4 text-center border border-amber-500/20">
-                      <p className="font-medium" style={{ color: '#d4af37' }}>{reportPreviews[2].content.keyMessage}</p>
-                    </div>
                   </div>
-                )}
-                
-                {/* CTA 버튼 - 내 결과 카드 만들기 */}
-                <Link 
-                  href="/free"
-                  className="mt-8 w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
-                  style={{
-                    background: 'linear-gradient(135deg, #d4af37 0%, #b8960c 100%)',
-                    color: '#0a0f1a'
-                  }}
-                >
-                  <span>✨</span>
-                  <span>내 결과 카드 만들기</span>
-                  <span>→</span>
-                </Link>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ========== 3. 인기 상품 ========== */}
-      <section className="bg-gray-50 py-28 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 bg-amber-50 text-amber-700 rounded-full text-sm font-medium mb-5 border border-amber-200">
-              상품 안내
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-5">
-              나에게 맞는 분석을 선택하세요
-            </h2>
+            )}
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {products.map(product => (
-              <ProductCard key={product.id} product={product} compact />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ========== 4. AI vs K-Saju 비교 - 프리미엄 대비 ========== */}
-      <section className="py-28 px-4"
-        style={{ background: 'linear-gradient(135deg, #050810 0%, #0a1628 30%, #1a2744 50%, #0a1628 70%, #050810 100%)' }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 bg-amber-500/10 text-amber-400 rounded-full text-sm font-medium mb-5 border border-amber-500/30">
-              왜 다른가요?
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-5" style={{ color: '#F5F5F0' }}>
-              AI 프롬프트 vs K-Saju 엔진
-            </h2>
-            <p className="text-lg" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>
-              같은 사주 서비스라도 <span className="text-amber-400">결과의 신뢰도</span>가 다릅니다.
+          <div className="text-center mt-12">
+            <p className="text-sm mb-6" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>
+              무료 체험에서 핵심 요약을 먼저 확인하세요
             </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-            {/* AI Prompt - 어둡고 흐릿한 느낌 */}
-            <div className="rounded-2xl p-8 border border-white/5 relative overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, rgba(30, 30, 35, 0.8) 0%, rgba(20, 20, 25, 0.9) 100%)' }}>
-              {/* 흐릿한 배경 효과 */}
-              <div className="absolute inset-0 opacity-20">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gray-500/20 rounded-full blur-3xl"></div>
-              </div>
-              
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-14 h-14 bg-gray-800/80 rounded-full flex items-center justify-center border border-gray-700/50">
-                    <span className="text-2xl opacity-60">☁️</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold" style={{ color: 'rgba(245, 245, 240, 0.7)' }}>AI 프롬프트 기반</h3>
-                    <p className="text-sm" style={{ color: 'rgba(245, 245, 240, 0.4)' }}>일반 서비스</p>
-                  </div>
-                </div>
-                <ul className="space-y-5">
-                  <li className="flex items-start gap-3" style={{ color: 'rgba(245, 245, 240, 0.5)' }}>
-                    <span className="w-5 h-5 rounded-full border border-dashed border-gray-600 flex items-center justify-center mt-0.5">
-                      <span className="w-1.5 h-1.5 bg-gray-600 rounded-full"></span>
-                    </span>
-                    <span>매번 다른 결과 (비일관성)</span>
-                  </li>
-                  <li className="flex items-start gap-3" style={{ color: 'rgba(245, 245, 240, 0.5)' }}>
-                    <span className="w-5 h-5 rounded-full border border-dashed border-gray-600 flex items-center justify-center mt-0.5">
-                      <span className="w-1.5 h-1.5 bg-gray-600 rounded-full"></span>
-                    </span>
-                    <span>모호한 해석, 검증 어려움</span>
-                  </li>
-                  <li className="flex items-start gap-3" style={{ color: 'rgba(245, 245, 240, 0.5)' }}>
-                    <span className="w-5 h-5 rounded-full border border-dashed border-gray-600 flex items-center justify-center mt-0.5">
-                      <span className="w-1.5 h-1.5 bg-gray-600 rounded-full"></span>
-                    </span>
-                    <span>만세력 계산 오류 가능성</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* K-Saju - 골드 강조 */}
-            <div className="rounded-2xl p-8 relative overflow-hidden"
-              style={{ 
-                background: 'linear-gradient(135deg, rgba(26, 39, 68, 0.9) 0%, rgba(36, 59, 97, 0.9) 100%)',
-                border: '2px solid rgba(212, 175, 55, 0.4)',
-                boxShadow: '0 0 60px rgba(212, 175, 55, 0.15)'
-              }}>
-              {/* 골드 글로우 배경 */}
-              <div className="absolute inset-0">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl"></div>
-              </div>
-              
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-14 h-14 rounded-full flex items-center justify-center"
-                    style={{ 
-                      background: 'linear-gradient(135deg, #d4af37 0%, #b8960c 100%)',
-                      boxShadow: '0 0 20px rgba(212, 175, 55, 0.4)'
-                    }}>
-                    <span className="text-2xl">⚡</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold" style={{ color: '#d4af37' }}>K-Saju 엔진</h3>
-                    <p className="text-sm" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>정밀 계산 기반</p>
-                  </div>
-                </div>
-                <ul className="space-y-5">
-                  <li className="flex items-start gap-3" style={{ color: '#F5F5F0' }}>
-                    <span className="w-5 h-5 flex items-center justify-center mt-0.5">
-                      <span className="text-amber-400">◆</span>
-                    </span>
-                    <span>동일 입력 시 <strong className="text-amber-300">동일 결과</strong> 보장</span>
-                  </li>
-                  <li className="flex items-start gap-3" style={{ color: '#F5F5F0' }}>
-                    <span className="w-5 h-5 flex items-center justify-center mt-0.5">
-                      <span className="text-amber-400">◆</span>
-                    </span>
-                    <span>절기 기반 <strong className="text-amber-300">정밀 만세력</strong> 계산</span>
-                  </li>
-                  <li className="flex items-start gap-3" style={{ color: '#F5F5F0' }}>
-                    <span className="w-5 h-5 flex items-center justify-center mt-0.5">
-                      <span className="text-amber-400">◆</span>
-                    </span>
-                    <span><strong className="text-amber-300">구조적 알고리즘</strong>으로 해석</span>
-                  </li>
-                  <li className="flex items-start gap-3" style={{ color: '#F5F5F0' }}>
-                    <span className="w-5 h-5 flex items-center justify-center mt-0.5">
-                      <span className="text-amber-400">◆</span>
-                    </span>
-                    <span>MBTI <strong className="text-amber-300">교차 검증</strong>으로 정확도 향상</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
+            <Link 
+              href="/free"
+              className="inline-flex items-center gap-2 px-10 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-lg font-bold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all shadow-2xl hover:shadow-purple-500/50 hover:-translate-y-1"
+            >
+              <span>무료로 시작하기</span>
+              <span>→</span>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ========== 5. 유즈케이스 ========== */}
+      {/* ========== 4. USE CASES ========== */}
       <UseCasesSection />
 
-      {/* ========== 6. 후기 - 프리미엄 다크 ========== */}
-      <section className="py-28 px-4"
-        style={{ background: 'linear-gradient(180deg, #050810 0%, #0a1628 50%, #050810 100%)' }}>
+      {/* ========== 5. PRODUCTS - 가격표 ========== */}
+      <section className="py-20 px-4" style={{ background: 'linear-gradient(180deg, #0a1628 0%, #050810 100%)' }}>
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-14">
             <span className="inline-block px-4 py-1.5 bg-amber-500/10 text-amber-400 rounded-full text-sm font-medium mb-5 border border-amber-500/30">
-              실제 후기
+              Pricing
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-5" style={{ color: '#F5F5F0' }}>
-              먼저 써본 사람들이 말합니다
+            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#F5F5F0' }}>
+              합리적인 가격으로 시작하세요
             </h2>
+            <p className="text-lg" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>
+              철학관 방문 대비 1/10 가격, 훨씬 정밀한 분석
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {reviews.map((review, idx) => (
-              <div key={idx} 
-                className="relative group rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(212, 175, 55, 0.15)',
-                  boxShadow: '0 0 30px rgba(212, 175, 55, 0.03)'
-                }}>
-                {/* 글로우 효과 */}
-                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{ boxShadow: 'inset 0 0 40px rgba(212, 175, 55, 0.05)' }}></div>
-                
-                <div className="relative z-10">
-                  <div className="flex gap-1 mb-5">
-                    {[...Array(review.rating)].map((_, i) => (
-                      <span key={i} className="text-amber-400 text-lg">★</span>
-                    ))}
-                  </div>
-                  <p className="mb-5 leading-relaxed text-lg" style={{ color: '#F5F5F0' }}>{review.text}</p>
-                  <p className="text-sm" style={{ color: 'rgba(245, 245, 240, 0.5)' }}>{review.author}</p>
-                </div>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            {popularProducts.map(product => (
+              <ProductCard key={product.id} product={product} />
             ))}
+          </div>
+
+          <div className="text-center">
+            <Link 
+              href="/products"
+              className="inline-flex items-center gap-2 px-8 py-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all border border-white/10 hover:border-amber-400/50"
+              style={{ color: '#F5F5F0' }}
+            >
+              <span>전체 상품 보기</span>
+              <span>→</span>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ========== 7. 신뢰 블록 - 프리미엄 다크 ========== */}
-      <section className="py-28 px-4"
-        style={{ background: 'linear-gradient(180deg, #0a1628 0%, #0d1a2d 50%, #0a1628 100%)' }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 bg-amber-500/10 text-amber-400 rounded-full text-sm font-medium mb-5 border border-amber-500/30">
-              신뢰 & 안전
+      {/* ========== 6. HOW IT WORKS ========== */}
+      <section className="py-20 px-4" style={{ background: 'linear-gradient(180deg, #050810 0%, #0a1628 100%)' }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="inline-block px-4 py-1.5 bg-blue-500/10 text-blue-300 rounded-full text-sm font-medium mb-5 border border-blue-500/30">
+              How it Works
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-5" style={{ color: '#F5F5F0' }}>
-              신뢰가 먼저입니다
+            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#F5F5F0' }}>
+              3분이면 충분합니다
             </h2>
-            <p className="text-lg" style={{ color: 'rgba(245, 245, 240, 0.6)' }}>
-              안전하게 분석받고, 안심하고 결제하세요
-            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* 개인정보 보호 */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Step 1 */}
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center text-2xl font-bold"
+                style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', color: 'white' }}>
+                1
+              </div>
+              <h3 className="text-xl font-bold mb-3" style={{ color: '#F5F5F0' }}>정보 입력</h3>
+              <p className="leading-relaxed" style={{ color: 'rgba(245, 245, 240, 0.7)' }}>
+                생년월일시, MBTI 입력<br/>
+                (생시는 선택사항)
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center text-2xl font-bold"
+                style={{ background: 'linear-gradient(135deg, #8b5cf6, #ec4899)', color: 'white' }}>
+                2
+              </div>
+              <h3 className="text-xl font-bold mb-3" style={{ color: '#F5F5F0' }}>정밀 계산</h3>
+              <p className="leading-relaxed" style={{ color: 'rgba(245, 245, 240, 0.7)' }}>
+                절기 만세력 기반<br/>
+                160가지 유형 분석
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center text-2xl font-bold"
+                style={{ background: 'linear-gradient(135deg, #ec4899, #f43f5e)', color: 'white' }}>
+                3
+              </div>
+              <h3 className="text-xl font-bold mb-3" style={{ color: '#F5F5F0' }}>리포트 수령</h3>
+              <p className="leading-relaxed" style={{ color: 'rgba(245, 245, 240, 0.7)' }}>
+                24시간 내 이메일로<br/>
+                PDF 발송
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center mt-14">
+            <Link 
+              href="/free"
+              className="inline-flex items-center gap-2 px-10 py-4 bg-white text-gray-900 text-lg font-bold rounded-xl hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
+            >
+              <span>지금 바로 시작</span>
+              <span>→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ========== 7. TRUST - 신뢰 지표 ========== */}
+      <section className="py-20 px-4" style={{ background: 'linear-gradient(180deg, #0a1628 0%, #050810 100%)' }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="inline-block px-4 py-1.5 bg-green-500/10 text-green-300 rounded-full text-sm font-medium mb-5 border border-green-500/30">
+              Trust Signals
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#F5F5F0' }}>
+              안전하고 투명하게 운영됩니다
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* 재현성 보장 */}
             <div className="relative group rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2"
               style={{
                 background: 'rgba(255, 255, 255, 0.03)',
                 backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(192, 192, 192, 0.2)',
-                boxShadow: '0 0 40px rgba(100, 150, 255, 0.05)'
+                border: '1px solid rgba(147, 51, 234, 0.2)',
+                boxShadow: '0 0 40px rgba(147, 51, 234, 0.05)'
               }}>
               {/* 글로우 효과 */}
               <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{ boxShadow: 'inset 0 0 40px rgba(100, 150, 255, 0.1)' }}></div>
+                style={{ boxShadow: 'inset 0 0 40px rgba(147, 51, 234, 0.1)' }}></div>
               
               <div className="relative z-10 text-center">
                 <div className="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-8"
                   style={{ 
-                    background: 'linear-gradient(135deg, rgba(192, 192, 192, 0.1) 0%, rgba(192, 192, 192, 0.05) 100%)',
-                    border: '2px solid rgba(192, 192, 192, 0.3)',
-                    boxShadow: '0 0 30px rgba(192, 192, 192, 0.1)'
+                    background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.15) 0%, rgba(147, 51, 234, 0.05) 100%)',
+                    border: '2px solid rgba(147, 51, 234, 0.4)',
+                    boxShadow: '0 0 30px rgba(147, 51, 234, 0.15)'
                   }}>
-                  <span className="text-4xl">🛡️</span>
+                  <span className="text-4xl">🔒</span>
                 </div>
-                <h3 className="text-xl font-bold mb-4" style={{ color: '#F5F5F0' }}>개인정보 보호</h3>
+                <h3 className="text-xl font-bold mb-4" style={{ color: '#F5F5F0' }}>재현성 보장</h3>
                 <div className="space-y-2" style={{ color: 'rgba(245, 245, 240, 0.7)' }}>
                   <p className="flex items-center justify-center gap-2">
-                    <span style={{ color: '#C0C0C0' }}>◆</span>
-                    <span>은행급 보안 적용</span>
+                    <span style={{ color: '#c084fc' }}>◆</span>
+                    <span>같은 입력 → 같은 결과</span>
                   </p>
                   <p className="flex items-center justify-center gap-2">
-                    <span style={{ color: '#C0C0C0' }}>◆</span>
-                    <span>Zero-Log 정책 (즉시 파기)</span>
+                    <span style={{ color: '#c084fc' }}>◆</span>
+                    <span>AI 랜덤 없음</span>
                   </p>
                   <p className="flex items-center justify-center gap-2">
-                    <span style={{ color: '#C0C0C0' }}>◆</span>
-                    <span>분석 목적 외 사용 없음</span>
+                    <span style={{ color: '#c084fc' }}>◆</span>
+                    <span>검증 가능한 로직</span>
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* 안전 결제 · 환불 */}
+            {/* 안전 결제 */}
             <div className="relative group rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2"
               style={{
                 background: 'rgba(255, 255, 255, 0.03)',
@@ -716,7 +972,7 @@ export default function Home() {
                 color: '#0a0f1a'
               }}
             >
-              프리미엄 분석 →
+              전체 상품 보기 →
             </Link>
           </div>
         </div>

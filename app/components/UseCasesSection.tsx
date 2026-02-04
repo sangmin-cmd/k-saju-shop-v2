@@ -138,21 +138,10 @@ export default function UseCasesSection() {
         </div>
 
         {/* CTA 버튼 */}
-        <div className="flex flex-col sm:flex-row justify-center gap-4 mt-14">
-          <Link 
-            href="/sample"
-            className="px-8 py-4 font-semibold rounded-xl transition-all duration-300 text-center hover:scale-105"
-            style={{ 
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              color: '#F5F5F0'
-            }}
-          >
-            📋 샘플 먼저 보기
-          </Link>
+        <div className="flex justify-center mt-14">
           <Link 
             href="/free"
-            className="px-8 py-4 font-semibold rounded-xl transition-all duration-300 text-center hover:scale-105"
+            className="px-10 py-4 font-bold text-lg rounded-xl transition-all duration-300 hover:scale-105 shadow-2xl"
             style={{ 
               background: 'linear-gradient(135deg, #d4af37 0%, #b8960c 100%)',
               color: '#0a0f1a'

@@ -87,7 +87,7 @@ export default function PaymentFailPage() {
         {/* 고객센터 안내 */}
         <p className="mt-6 text-xs text-gray-500">
           결제 오류가 계속되면 고객센터로 문의해 주세요.<br />
-          📞 010-2806-2497 | ✉️ amoretto75@naver.com
+          📞 010-2806-2497 | ✉️ fatemate2026@gmail.com
         </p>
       </div>
     </div>
