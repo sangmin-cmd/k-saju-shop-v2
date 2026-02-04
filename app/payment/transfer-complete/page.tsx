@@ -20,6 +20,7 @@ export default function TransferCompletePage() {
   const { clearCart } = useCart();
   const [orderData, setOrderData] = useState<OrderData | null>(null);
   const [copied, setCopied] = useState(false);
+  const [notificationSent, setNotificationSent] = useState(false);
 
   // 계좌 정보 (결제 완료 단계에서만 노출)
   const bankInfo = {
@@ -31,13 +32,50 @@ export default function TransferCompletePage() {
   useEffect(() => {
     const stored = localStorage.getItem('transferOrder');
     if (stored) {
-      setOrderData(JSON.parse(stored));
+      const order = JSON.parse(stored);
+      setOrderData(order);
       clearCart(); // 장바구니 비우기
+      
+      // 🎯 관리자에게 이메일 발송 (한 번만)
+      if (!notificationSent) {
+        sendAdminNotification(order);
+      }
     } else {
       // 주문 정보 없으면 메인으로
       router.push('/');
     }
-  }, []);
+  }, [notificationSent]);
+
+  // 관리자 알림 발송 함수
+  const sendAdminNotification = async (order: OrderData) => {
+    try {
+      const response = await fetch('/api/admin-notify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orderId: order.orderId,
+          amount: order.totalAmount,
+          customerName: order.customerName,
+          customerEmail: order.customerEmail,
+          customerPhone: order.customerPhone,
+          products: order.items.map(item => ({
+            name: item.product.name,
+            price: item.product.price
+          })),
+        }),
+      });
+      
+      if (response.ok) {
+        setNotificationSent(true);
+        console.log('관리자 알림 발송 완료');
+      }
+    } catch (error) {
+      console.error('관리자 알림 발송 실패:', error);
+      // 알림 실패해도 고객 화면에는 영향 없음
+    }
+  };
 
   const copyAccount = () => {
     navigator.clipboard.writeText(bankInfo.account);
