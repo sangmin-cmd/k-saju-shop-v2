@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
     `;
 
     const { data, error } = await resend.emails.send({
-      from: 'K-Saju Shop <onboarding@resend.dev>',
+      from: 'K-Saju <noreply@sajutype.kr>',
       to: ADMIN_EMAIL,
       subject: `🔔 [새 주문] ${customerName || '고객'}님 - ${Number(amount).toLocaleString()}원`,
       html: emailHtml,
