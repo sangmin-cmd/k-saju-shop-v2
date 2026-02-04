@@ -7,33 +7,80 @@ import { useCart } from '../../components/CartProvider';
 
 export default function PaymentSuccessPage() {
   const searchParams = useSearchParams();
-  const { clearCart } = useCart(); // 장바구니 초기화 훅 추가
+  const { clearCart } = useCart();
   const [orderInfo, setOrderInfo] = useState<any>(null);
   const [notificationSent, setNotificationSent] = useState(false);
+  const [confirmStatus, setConfirmStatus] = useState<'loading' | 'success' | 'error'>('loading');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const orderId = searchParams.get('orderId');
   const amount = searchParams.get('amount');
   const paymentKey = searchParams.get('paymentKey');
 
   useEffect(() => {
-    // 로컬스토리지에서 주문 정보 가져오기
-    const pendingOrder = localStorage.getItem('pendingOrder');
-    if (pendingOrder) {
-      const order = JSON.parse(pendingOrder);
-      setOrderInfo(order);
-      
-      // 관리자에게 알림 이메일 발송 (한 번만)
-      if (!notificationSent && orderId && amount) {
-        sendAdminNotification(order);
-      }
-      
-      // 주문 완료 후 로컬스토리지 클리어
-      localStorage.removeItem('pendingOrder');
-      
-      // 🎯 장바구니 비우기 추가!
-      clearCart();
+    if (!paymentKey || !orderId || !amount) {
+      setConfirmStatus('error');
+      setErrorMessage('결제 정보가 올바르지 않습니다.');
+      return;
     }
-  }, [orderId, amount, notificationSent, clearCart]);
+
+    // 🔑 결제 승인 API 호출
+    confirmPayment();
+  }, [paymentKey, orderId, amount]);
+
+  // 결제 승인 함수
+  const confirmPayment = async () => {
+    try {
+      console.log('=== 결제 승인 요청 ===');
+      
+      const response = await fetch('/api/toss/confirm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          paymentKey,
+          orderId,
+          amount: Number(amount),
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error('승인 실패:', result);
+        setConfirmStatus('error');
+        setErrorMessage(result.error || '결제 승인에 실패했습니다.');
+        return;
+      }
+
+      console.log('=== 승인 성공 ===');
+      setConfirmStatus('success');
+
+      // 승인 성공 후 주문 정보 처리
+      const pendingOrder = localStorage.getItem('pendingOrder');
+      if (pendingOrder) {
+        const order = JSON.parse(pendingOrder);
+        setOrderInfo(order);
+        
+        // 관리자에게 알림 이메일 발송 (한 번만)
+        if (!notificationSent) {
+          sendAdminNotification(order);
+        }
+        
+        // 주문 완료 후 로컬스토리지 클리어
+        localStorage.removeItem('pendingOrder');
+        
+        // 장바구니 비우기
+        clearCart();
+      }
+
+    } catch (error) {
+      console.error('승인 오류:', error);
+      setConfirmStatus('error');
+      setErrorMessage('결제 승인 처리 중 오류가 발생했습니다.');
+    }
+  };
 
   // 관리자 알림 발송 함수
   const sendAdminNotification = async (order: any) => {
@@ -59,10 +106,57 @@ export default function PaymentSuccessPage() {
       }
     } catch (error) {
       console.error('관리자 알림 발송 실패:', error);
-      // 알림 실패해도 고객 화면에는 영향 없음
     }
   };
 
+  // 로딩 중
+  if (confirmStatus === 'loading') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+          <h2 className="text-xl font-bold text-gray-800">결제 승인 처리 중...</h2>
+          <p className="text-gray-600 mt-2">잠시만 기다려주세요</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 승인 실패
+  if (confirmStatus === 'error') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
+          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">결제 승인 실패</h1>
+          <p className="text-gray-600 mb-6">{errorMessage}</p>
+          <div className="space-y-3">
+            <Link
+              href="/checkout"
+              className="block w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            >
+              다시 시도하기
+            </Link>
+            <Link
+              href="/"
+              className="block w-full py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+            >
+              홈으로 돌아가기
+            </Link>
+          </div>
+          <p className="mt-6 text-xs text-gray-500">
+            문의: 010-2806-2497 | fatemate2026@gmail.com
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // 승인 성공
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
