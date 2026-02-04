@@ -140,20 +140,6 @@ export default function CheckoutPage() {
 
       localStorage.setItem('transferOrder', JSON.stringify(orderData));
 
-      // 관리자에게 이메일 알림
-      try {
-        await fetch('/api/send-order-notification', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...orderData,
-            paymentType: 'bank_transfer',
-          }),
-        });
-      } catch (e) {
-        console.log('알림 전송 실패 (무시됨)');
-      }
-
       // 주문 완료 페이지로 이동
       router.push('/payment/transfer-complete');
       

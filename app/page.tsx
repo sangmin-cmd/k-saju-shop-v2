@@ -999,7 +999,7 @@ export default function Home() {
                 color: '#0a0f1a'
               }}
             >
-              프리미엄
+              전체 상품 보기
             </Link>
           </div>
         </div>
