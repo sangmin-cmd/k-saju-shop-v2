@@ -44,7 +44,7 @@ export default function Footer() {
             <p><strong>대표자:</strong> 이상민</p>
             <p><strong>사업자등록번호:</strong> 110-37-62594</p>
             <p><strong>주소:</strong> 경기도 용인시 기흥구 동백죽전대로 444, C602-B23호(중동, 쥬네브)</p>
-            <p><strong>전화번호:</strong> 010-8065-5466</p>
+            <p><strong>전화번호:</strong> 070-8065-5466</p>
             <p><strong>통신판매업 신고번호:</strong> 제 2026-용인기흥-00186 호</p>
             <p><strong>이메일:</strong> fatemate2026@gmail.com</p>
           </div>
