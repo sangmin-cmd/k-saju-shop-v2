@@ -50,7 +50,7 @@ export default function BusinessInfoPage() {
             
             <div>
               <p className="text-gray-500 text-sm mb-1">고객센터</p>
-              <p className="text-lg">010-2806-2497</p>
+              <p className="text-lg">070-8065-5466</p>
             </div>
             
             <div>

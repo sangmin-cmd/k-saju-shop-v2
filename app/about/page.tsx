@@ -293,7 +293,7 @@ export default function AboutPage() {
               <p><strong className="text-amber-300">사업자등록번호:</strong> 110-37-62594</p>
               <p><strong className="text-amber-300">이메일:</strong> fatemate2026@gmail.com</p>
               <p className="md:col-span-2"><strong className="text-amber-300">주소:</strong> 경기도 용인시 기흥구 동백죽전대로 444, C602-B23호</p>
-              <p><strong className="text-amber-300">전화:</strong> 010-2806-2497</p>
+              <p><strong className="text-amber-300">전화:</strong> 070-8065-5466 </p>
             </div>
           </section>
         </div>

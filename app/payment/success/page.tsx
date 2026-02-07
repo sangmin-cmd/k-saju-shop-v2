@@ -149,7 +149,7 @@ export default function PaymentSuccessPage() {
             </Link>
           </div>
           <p className="mt-6 text-xs text-gray-500">
-            문의: 010-2806-2497 | fatemate2026@gmail.com
+            문의:070-8065-5466 | fatemate2026@gmail.com
           </p>
         </div>
       </div>
@@ -224,7 +224,7 @@ export default function PaymentSuccessPage() {
 
         {/* 고객센터 안내 */}
         <p className="mt-6 text-xs text-gray-500">
-          결과물 문의: 010-2806-2497 | fatemate2026@gmail.com
+          결과물 문의: 070-8065-5466 | fatemate2026@gmail.com
         </p>
       </div>
     </div>
