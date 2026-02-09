@@ -33,6 +33,9 @@ export default function Header() {
             <Link href="/faq" className="text-gray-600 hover:text-black transition-colors font-light">
               FAQ
             </Link>
+            <Link href="/contact" className="text-gray-600 hover:text-black transition-colors font-light">
+              문의하기
+            </Link>
           </nav>
 
           {/* 액션 버튼 */}
@@ -69,6 +72,7 @@ export default function Header() {
               <Link href="/about" className="text-gray-600 hover:text-black transition-colors font-light">소개</Link>
               <Link href="/reviews" className="text-gray-600 hover:text-black transition-colors font-light">후기</Link>
               <Link href="/faq" className="text-gray-600 hover:text-black transition-colors font-light">FAQ</Link>
+              <Link href="/contact" className="text-gray-600 hover:text-black transition-colors font-light">문의하기</Link>
             </nav>
           </div>
         )}
