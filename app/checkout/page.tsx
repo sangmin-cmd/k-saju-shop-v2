@@ -113,12 +113,13 @@ export default function CheckoutPage() {
       newErrors.customerEmail = '올바른 이메일 형식이 아닙니다';
     }
 
-    const phoneRegex = /^01[0-9]{8,9}$/;
-    const cleanPhone = formData.customerPhone.replace(/-/g, '');
-    if (!formData.customerPhone.trim()) {
-      newErrors.customerPhone = '전화번호를 입력해주세요';
-    } else if (!phoneRegex.test(cleanPhone)) {
-      newErrors.customerPhone = '올바른 휴대폰 번호를 입력해주세요 (예: 01012345678)';
+    // 전화번호는 선택사항, 입력했을 때만 형식 검증
+    if (formData.customerPhone.trim()) {
+      const phoneRegex = /^01[0-9]{8,9}$/;
+      const cleanPhone = formData.customerPhone.replace(/-/g, '');
+      if (!phoneRegex.test(cleanPhone)) {
+        newErrors.customerPhone = '올바른 휴대폰 번호를 입력해주세요 (예: 01012345678)';
+      }
     }
 
     // 사주 분석용 정보 검증
@@ -367,7 +368,7 @@ export default function CheckoutPage() {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        휴대폰 번호 <span className="text-red-500">*</span>
+                        휴대폰 번호 <span className="text-gray-400">(선택)</span>
                       </label>
                       <input
                         type="tel"
@@ -381,6 +382,7 @@ export default function CheckoutPage() {
                       {errors.customerPhone && (
                         <p className="text-red-500 text-sm mt-1">{errors.customerPhone}</p>
                       )}
+                      <p className="text-sm text-gray-500 mt-1">📞 입력하지 않아도 주문 가능합니다</p>
                     </div>
                   </div>
                 </div>
