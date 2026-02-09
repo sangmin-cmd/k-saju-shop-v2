@@ -24,7 +24,7 @@ export default function PaymentSuccessPage() {
       return;
     }
 
-    // 🔑 결제 승인 API 호출
+    // 🔒 결제 승인 API 호출
     confirmPayment();
   }, [paymentKey, orderId, amount]);
 
@@ -82,7 +82,7 @@ export default function PaymentSuccessPage() {
     }
   };
 
-  // 관리자 알림 발송 함수
+  // 관리자 알림 발송 함수 (개인정보 포함)
   const sendAdminNotification = async (order: any) => {
     try {
       const response = await fetch('/api/admin-notify', {
@@ -96,13 +96,20 @@ export default function PaymentSuccessPage() {
           customerName: order?.customerName || '',
           customerEmail: order?.customerEmail || '',
           customerPhone: order?.customerPhone || '',
+          
+          // 🔮 사주 분석용 개인정보 추가
+          birthDate: order?.birthDate || '',
+          birthCalendar: order?.birthCalendar || 'solar',
+          birthTime: order?.birthTime || '',
+          mbti: order?.mbti || '',
+          
           products: order?.items || [],
         }),
       });
       
       if (response.ok) {
         setNotificationSent(true);
-        console.log('관리자 알림 발송 완료');
+        console.log('관리자 알림 발송 완료 (개인정보 포함)');
       }
     } catch (error) {
       console.error('관리자 알림 발송 실패:', error);
@@ -149,7 +156,7 @@ export default function PaymentSuccessPage() {
             </Link>
           </div>
           <p className="mt-6 text-xs text-gray-500">
-            문의:070-8065-5466 | fatemate2026@gmail.com
+            문의: 070-8065-5466 | fatemate2026@gmail.com
           </p>
         </div>
       </div>
@@ -195,6 +202,21 @@ export default function PaymentSuccessPage() {
             )}
           </div>
         </div>
+
+        {/* 🔮 분석 정보 확인 */}
+        {orderInfo?.birthDate && (
+          <div className="bg-purple-50 rounded-lg p-4 mb-6 text-left border border-purple-200">
+            <h3 className="font-semibold text-purple-700 mb-3 flex items-center gap-2">
+              <span>🔮</span> 분석 정보 확인
+            </h3>
+            <div className="space-y-1 text-sm text-purple-600">
+              <p>생년월일: <strong>{orderInfo.birthDate}</strong></p>
+              <p>양력/음력: <strong>{orderInfo.birthCalendar === 'solar' ? '☀️ 양력' : '🌙 음력'}</strong></p>
+              <p>출생시간: <strong>{orderInfo.birthTime}</strong></p>
+              <p>MBTI: <strong className="text-lg">{orderInfo.mbti}</strong></p>
+            </div>
+          </div>
+        )}
 
         {/* 안내 메시지 */}
         <div className="bg-blue-50 rounded-lg p-4 mb-6 text-left">

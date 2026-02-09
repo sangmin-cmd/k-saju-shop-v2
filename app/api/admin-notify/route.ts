@@ -9,7 +9,19 @@ const ADMIN_EMAIL = 'fatemate2026@gmail.com';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { orderId, amount, customerName, customerEmail, customerPhone, products } = body;
+    const { 
+      orderId, 
+      amount, 
+      customerName, 
+      customerEmail, 
+      customerPhone, 
+      products,
+      // 사주 분석용 개인정보
+      birthDate,
+      birthCalendar,
+      birthTime,
+      mbti
+    } = body;
 
     // 상품 목록 HTML 생성
     const productsList = products?.map((p: any) => `
@@ -18,6 +30,9 @@ export async function POST(request: NextRequest) {
         <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">${p.price?.toLocaleString()}원</td>
       </tr>
     `).join('') || '';
+
+    // 양력/음력 한글 표시
+    const calendarTypeKor = birthCalendar === 'solar' ? '☀️ 양력' : '🌙 음력';
 
     const emailHtml = `
       <!DOCTYPE html>
@@ -70,6 +85,33 @@ export async function POST(request: NextRequest) {
             </tr>
           </table>
           
+          <h2 style="color: #374151; border-bottom: 2px solid #a855f7; padding-bottom: 10px;">🔮 사주 분석 정보</h2>
+          
+          <table style="width: 100%; border-collapse: collapse; margin: 20px 0; background: linear-gradient(to right, #faf5ff, #fce7f3);">
+            <tr>
+              <td style="padding: 10px; font-weight: bold; width: 120px;">생년월일</td>
+              <td style="padding: 10px; font-weight: bold; color: #7c3aed;">${birthDate || '미입력'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; font-weight: bold;">양력/음력</td>
+              <td style="padding: 10px; font-weight: bold; color: #7c3aed;">${calendarTypeKor || '미입력'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; font-weight: bold;">출생 시간</td>
+              <td style="padding: 10px; font-weight: bold; color: #7c3aed;">${birthTime || '미입력'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; font-weight: bold;">MBTI</td>
+              <td style="padding: 10px; font-weight: bold; color: #7c3aed; font-size: 18px;">${mbti || '미입력'}</td>
+            </tr>
+          </table>
+          
+          <div style="background: #ede9fe; border: 2px solid #a855f7; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <p style="margin: 0; color: #6b21a8; font-size: 14px; text-align: center;">
+              <strong>🎯 이 정보로 엔진 돌리세요!</strong>
+            </p>
+          </div>
+          
           <h2 style="color: #374151; border-bottom: 2px solid #ec4899; padding-bottom: 10px;">🛒 주문 상품</h2>
           
           <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
@@ -85,15 +127,18 @@ export async function POST(request: NextRequest) {
           </table>
           
           <div style="background: #ecfdf5; border: 1px solid #10b981; padding: 20px; border-radius: 8px; margin-top: 30px; text-align: center;">
-            <p style="margin: 0; color: #065f46; font-size: 16px;">
-              <strong>📧 고객에게 분석 결과 발송해주세요!</strong><br>
-              <span style="font-size: 14px;">이메일: ${customerEmail}</span>
+            <p style="margin: 0 0 10px 0; color: #065f46; font-size: 16px;">
+              <strong>📧 분석 완료 후 결과 발송</strong>
+            </p>
+            <p style="margin: 0; color: #047857; font-size: 14px;">
+              수신 이메일: <strong>${customerEmail}</strong>
             </p>
           </div>
         </div>
         
         <div style="text-align: center; padding: 20px; color: #9ca3af; font-size: 12px;">
           <p>K-Saju Shop 관리자 알림 시스템</p>
+          <p style="margin: 5px 0;">sajutype.kr</p>
         </div>
       </body>
       </html>
@@ -102,7 +147,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await resend.emails.send({
       from: 'K-Saju <noreply@sajutype.kr>',
       to: ADMIN_EMAIL,
-      subject: `🔔 [새 주문] ${customerName || '고객'}님 - ${Number(amount).toLocaleString()}원`,
+      subject: `🔔 [새 주문] ${customerName || '고객'}님 - ${mbti || 'MBTI'} / ${birthDate || '생년월일'} - ${Number(amount).toLocaleString()}원`,
       html: emailHtml,
     });
 
